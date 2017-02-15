@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>CS2205 Final Project - Priority Preemptive Simulation</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <style>
+        #target {
+            margin-top: 5px;
+        }
+        
+        .table > tbody > tr > td.nopadding{
+            padding: 0px;
+        }
+        
+        .table > tbody > tr > td.nopadding > table {
+            margin: 0px;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <table id="tableProc" class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th>Proccess Name</th>
+                            <th>Arrival Time (ms)</th>
+                            <th>CPU Burst Time (ms)</th>
+                            <th>Priority</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-xs-offset-3 col-xs-3">
+                <button class="btn btn-success btn-lg" id="btn-add"><span class="glyphicon glyphicon-plus"></span> Add Proccess</button>
+            </div>
+            <div class="col-xs-3">
+                <button class="btn btn-primary btn-lg" id="btn-generate"><span class="glyphicon glyphicon-eye-open"></span> Generate Gantt Chart</button>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-xs-12">
+                <div id="target">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script>
+var rows = 0;    
+$(function(){
+    $(".btn-remove").on("click", function() {
+            $(this).parent().parent().remove();
+        });
+    
+    $("#btn-add").on("click", function() {
+        $("#tableProc tbody").append("<tr><td><h4 class='proc-name'><strong>P" + ++rows +"</strong></h4></td>" +
+                                "<td><input type='text' class='form-control arrival-time'></td>" +
+                                "<td><input type='text' class='form-control burst-time'></td>" +
+                                "<td><input type='text' class='form-control priority'></td>" +
+                                "<td><button class='btn btn-danger btn-remove'><span class='glyphicon glyphicon-remove'></span></button></td></tr>");
+        
+        $(".btn-remove").on("click", function() {
+            $(this).parent().parent().remove();
+        });
+    });
+    
+    $("#btn-generate").on("click", function(){
+        var data = "";
+        var buff = "";
+        $("#tableProc > tbody > tr").each(function(){
+            var tmp = $(this).children("td");
+            buff += "{";
+            
+            buff += $(tmp).children(".proc-name").text() + "|";
+            buff += $(tmp).children(".arrival-time").val() + "|";
+            buff += $(tmp).children(".burst-time").val() + "|";
+            buff += $(tmp).children(".priority").val();
+            
+            buff += "}";
+            
+            data += buff;
+            buff = "";
+        });
+        
+        $.post("/ajax/process.java", data, function(data, status) {
+            $("#target").html(data);
+        });
+    });
+});
+</script>
