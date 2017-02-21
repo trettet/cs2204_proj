@@ -150,6 +150,7 @@ public class SockThread extends Thread {
                 st.write("Content-Type: text/plain\r\n");
                 st.write("\r\n");
 
+                st.write("<br><h1>Gantt Chart</h1><br><br>");
                 st.write("<div class='row'><div class='col-xs-12'><table class='table table-bordered table-hover'><tr>");
 
                 for(String pName : ganttMaster.getPNameList()) {
@@ -189,32 +190,32 @@ public class SockThread extends Thread {
                 }
 
                 st.write("<div class='row'><div class='col-md-6'><h3>Turnaround Time</h3>");
-                st.write("<table class='table table-bordered'>");
+                st.write("<table class='table table-striped'>");
 
                 for(TableObject trav: taList) {
-                    st.write("<tr><td>"+ trav.getPName()+"</td>  <td>"+ trav.getFirstEqStr(" ")+"</td>  <td>"+ trav.getFirstResult()+"</td> </tr>");
+                    st.write("<tr><td colspan='2'>"+ trav.getPName()+" = "+ trav.getFirstEqStr(" ")+" = "+ trav.getFirstResult()+"ms</td> </tr>");
                     avgTA += trav.getFirstResult();
                 }
                 avgTA /= orgPList.size();
 
-                st.write("<tr><td colspan='2'>Average Turnaround Time</td><td>"+String.format("%.2fms", avgTA)+"</td></tr>");
+                st.write("<tr><td colspan='2'><strong>Average Turnaround Time = "+String.format("%.2fms", avgTA)+"</strong></td></tr>");
                 st.write("</table></div>");
 
                 st.write("<div class='col-md-6'><h3>Waiting Time</h3>");
-                st.write("<table class='table table-bordered'>");
+                st.write("<table class='table table-striped'>");
 
                 for(TableObject trav : wtList) {
-                    st.write("<tr><td>"+ trav.getPName()+"</td><td class='nopadding'><table class='table'><tr>");
+                    st.write("<tr><td colspan='2'>"+ trav.getPName()+" = ");
                     i=0;
                     for(String eqTrav : trav.getAllEqStr(" ")) {
-                        st.write("<td>("+ eqTrav +")"+ (++i < trav.getEqCount()? "&nbsp&nbsp&nbsp&nbsp+" : "" )+"</td>");
+                        st.write("&nbsp("+ eqTrav +")"+ (++i < trav.getEqCount()? "&nbsp+" : "" )+"");
                     }
-                    st.write("</tr></table></td><td>"+ trav.getResults()+"</td> </tr>");
+                    st.write(" = "+ trav.getResults()+"ms</td></tr>");
                     avgWT += (double)trav.getResults();
                 }
                 avgWT /= orgPList.size();
 
-                st.write("<tr><td colspan='2'>Average Waiting Time</td><td>"+String.format("%.2fms", avgWT)+"</td></tr>");
+                st.write("<tr><td colspan='2'><strong>Average Waiting Time = "+String.format("%.2fms", avgWT)+"</td></tr>");
                 st.write("</table></div></div>");
 
                 st.close();
