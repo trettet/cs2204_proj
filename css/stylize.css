@@ -1,0 +1,103 @@
+body {
+    background-color: #202020;
+    overflow-x: hidden;
+    font-family: 'Lato', serif;
+}
+
+.mainwrapper {
+    margin-top: 15px;
+}
+
+#target {
+    margin-top: 10px;
+}
+
+.table > tbody > tr > td.nopadding{
+    padding: 0px;
+}
+
+.table > tbody > tr > td.nopadding > table {
+    margin: 0px;
+    border: none;
+}
+
+.table > tbody > tr > td > h4 {
+    display: inline-block;
+}
+
+.table > tbody > tr > td > a.btn-remove {
+    color: #e03333;
+    margin-left: 2px;
+}
+
+.table-borderless tbody tr td,
+.table-borderless tbody tr th,
+.table-borderless thead tr th,
+.table-borderless thead tr td,
+.table-borderless tfoot tr th,
+.table-borderless tfoot tr td {
+    border: none;
+    //border-bottom: 1px #2d2d2d solid;
+}
+
+.table>tbody>tr.success>td, .table>tbody>tr.success>th, .table>tbody>tr>td.success, .table>tbody>tr>th.success, .table>tfoot>tr.success>td, .table>tfoot>tr.success>th, .table>tfoot>tr>td.success, .table>tfoot>tr>th.success, .table>thead>tr.success>td, .table>thead>tr.success>th, .table>thead>tr>td.success, .table>thead>tr>th.success {
+    background-color: #4e9953;
+    border: none;
+    border-left: 1px #474747 solid;
+    text-align: center;
+}
+
+.table-hover>tbody>tr.success:hover>td, .table-hover>tbody>tr.success:hover>th, .table-hover>tbody>tr:hover>.success, .table-hover>tbody>tr>td.success:hover, .table-hover>tbody>tr>th.success:hover {
+    background-color: #009637;
+}
+
+.table>tbody>tr.danger>td, .table>tbody>tr.danger>th, .table>tbody>tr>td.danger, .table>tbody>tr>th.danger, .table>tfoot>tr.danger>td, .table>tfoot>tr.danger>th, .table>tfoot>tr>td.danger, .table>tfoot>tr>th.danger, .table>thead>tr.danger>td, .table>thead>tr.danger>th, .table>thead>tr>td.danger, .table>thead>tr>th.danger {
+    background-color: transparent;
+    border: none;
+}
+
+input.form-control {
+    background-color: transparent;
+    color: #f4f4f4;
+    border: none;
+    border-radius: 0px;
+    border-bottom: 1px #3d3d3d solid;
+    transition: 0.35s all ease-out;
+    outline: none;
+    font-size: 18px;
+}
+
+input.form-control:focus {
+    color: #f4f4f4;
+    border-bottom: 1px #66afe9 solid;
+    box-shadow: none;
+}
+
+        
+input.form-control.error-outline {
+    border-bottom: 1px red solid;
+}
+
+        
+h1, h2, h3, h4, h5, h6, h7, h8, p, tr {
+    color: #f4f4f4;
+}
+
+.navbar-inverse {
+    background-color: #262626;
+}
+
+.btn-burger, .btn-burger:focus {
+    color: #f4f4f4;
+    background-color: #161616;
+    border: none;
+}
+
+.btn-burger:active {
+    color: #f4f4f4;
+    background-color: #070707;
+}
+
+.btn-burger:hover {
+    color: #f4f4f4;
+}

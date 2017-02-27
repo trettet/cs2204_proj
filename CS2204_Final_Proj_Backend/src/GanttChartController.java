@@ -6,7 +6,8 @@ import java.util.stream.Collectors;
 /**
  * Created by theLa on Feb-14-2017.
  */
-public class GanttChartController {
+public class GanttChartController
+{
     private final ArrayList<GanttChartObj> ganttChart;
     private int last;
     public GanttChartController()
@@ -17,6 +18,7 @@ public class GanttChartController {
 
     public void addProcess(String pName, long started, long ended)
     {
+        System.out.println("Added PROCESS: " + pName);
         ganttChart.add(new GanttChartObj(pName, started, ended));
         last++;
     }

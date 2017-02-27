@@ -7,11 +7,11 @@ import java.net.Socket;
 /**
  * Created by theLa on Feb-08-2017.
  */
-public final class IOStreams {
+public final class StreamController {
     private final PrintWriter out;
     private final BufferedReader in;
     private final Socket sock;
-    public IOStreams(Socket sock)
+    public StreamController(Socket sock)
     {
         PrintWriter outTmp = null;
         BufferedReader inTmp = null;

@@ -2,58 +2,62 @@
 <html>
 <head lang="en">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>CS2205 Final Project - Priority Preemptive Simulation</title>
+    <title>CS2204 Final Project</title>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <style>
-        #target {
-            margin-top: 5px;
-        }
+    <link rel="stylesheet" type="text/css" href="css/ajaxloader.css">
+    <link rel="stylesheet" type="text/css" href="css/ajaxloader2.css">
+    <link rel="stylesheet" type="text/css" href="css/animate.css">
+    <link rel="stylesheet" type="text/css" href="css/stylize.css">
+    <link rel="stylesheet" type="text/css" href="css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Lato">
+    <style>       
         
-        .table > tbody > tr > td.nopadding{
-            padding: 0px;
-        }
-        
-        .table > tbody > tr > td.nopadding > table {
-            margin: 0px;
-            border: none;
-        }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12">
-                <table id="tableProc" class="table table-bordered text-center">
-                    <thead>
-                        <tr>
-                            <th>Proccess Name</th>
-                            <th>Arrival Time (ms)</th>
-                            <th>CPU Burst Time (ms)</th>
-                            <th>Priority</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+            <button class="btn btn-burger hidden-xs navbar-btn burger pull-left" style="margin-right: 10px"><span class="glyphicon glyphicon-menu-hamburger"></span></button>
+          <a class="navbar-brand" href="#">CS2204 Final Project</a>
         </div>
-        
-        <div class="row">
-            <div class="col-xs-offset-3 col-xs-3">
-                <button class="btn btn-success btn-lg" id="btn-add"><span class="glyphicon glyphicon-plus"></span> Add Proccess</button>
-            </div>
-            <div class="col-xs-3">
-                <button class="btn btn-primary btn-lg" id="btn-generate"><span class="glyphicon glyphicon-eye-open"></span> Generate Gantt Chart</button>
-            </div>
+      </div><!-- /.container-fluid -->
+    </nav>
+    <div id="wrapper">
+    <div id="sidebar-wrapper" class="hidden-xs">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="#">
+                        Priority Scheduling(Preemptive)
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="prioDash">Dashboard</a>
+                </li>
+                <li>
+                    <a href="#">About the Algorithm</a>
+                </li>
+                <li>
+                    <a href="#">Advantages and Disadvantages</a>
+                <li class="sidebar-brand">
+                    <a href="#">
+                        Least Recently Used (LRU) Caching
+                    </a>
+                </li>
+            </ul>
         </div>
-        
-        <div class="row">
-            <div class="col-xs-12">
-                <div id="target">
-                </div>
-            </div>
+        <!-- /#sidebar-wrapper -->
+    
+        <div class="container" id="loadhere">
+            
         </div>
     </div>
 </body>
@@ -61,46 +65,153 @@
 </html>
 <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/wow.min.js"></script>
 <script>
+new WOW().init();
 var rows = 0;    
-$(function(){
-    $(".btn-remove").on("click", function() {
-            $(this).parent().parent().remove();
-        });
+var isRequesting = false;
+$(function(){    
     
-    $("#btn-add").on("click", function() {
-        $("#tableProc tbody").append("<tr><td><h4 class='proc-name'><strong>P" + ++rows +"</strong></h4></td>" +
-                                "<td><input type='text' class='form-control arrival-time'></td>" +
-                                "<td><input type='text' class='form-control burst-time'></td>" +
-                                "<td><input type='text' class='form-control priority'></td>" +
-                                "<td><button class='btn btn-danger btn-remove'><span class='glyphicon glyphicon-remove'></span></button></td></tr>");
-        
-        $(".btn-remove").on("click", function() {
-            $(this).parent().parent().remove();
-        });
+    
+    $(".btn-burger").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
     });
     
-    $("#btn-generate").on("click", function(){
-        var data = "";
-        var buff = "";
-        $("#tableProc > tbody > tr").each(function(){
-            var tmp = $(this).children("td");
-            buff += "{";
-            
-            buff += $(tmp).children(".proc-name").text() + "|";
-            buff += $(tmp).children(".arrival-time").val() + "|";
-            buff += $(tmp).children(".burst-time").val() + "|";
-            buff += $(tmp).children(".priority").val();
-            
-            buff += "}";
-            
-            data += buff;
-            buff = "";
+    $("#prioDash").click(function(e){
+        e.preventDefault();
+        $("#loadhere").html("<div class='cssload-thecube'>" +
+	       "<div class='cssload-cube cssload-c1'></div>" +
+	       "<div class='cssload-cube cssload-c2'></div>" +
+	       "<div class='cssload-cube cssload-c4'></div>" +
+	       "<div class='cssload-cube cssload-c3'></div>" +
+                            "</div>");
+        
+        $.ajax({
+            url:"priopreemptive.html",
+            success: function(result) {
+                $("#loadhere").html(result);
+                
+                $(".btn-remove").on("click", function(e) {
+                    e.preventDefault();
+                    removeElem();
+                });
+
+                $("#btn-add").on("click", function() {
+                    var elem = $("<tr class='animated fadeIn'><td><h4 class='proc-name'><strong>P" + ++rows +"</strong></h4><a href='#' class='btn-remove'><span class='glyphicon glyphicon-remove'></span></a></td>" +
+                                            "<td><input type='text' class='form-control arrival-time' required></td>" +
+                                            "<td><input type='text' class='form-control burst-time' required></td>" +
+                                            "<td><input type='text' class='form-control priority' required></td>" +
+                                            "</tr>");
+
+                    var elem= $("#tableProc tbody").append(elem);
+
+                    $(".btn-remove").on("click", removeElem);
+                });
+
+                $("#btn-generate").on("click", function(){
+                    if (isRequesting == false) {
+                        var emptyTbxes = checkForEmptyTbxes();
+
+                        if (emptyTbxes == 0) {
+                            isRequesting = true;
+                            var data = "";
+                            var buff = "";
+                            $("#tableProc > tbody > tr").each(function(){
+                                var tmp = $(this).children("td");
+                                buff += "{";
+
+                                buff += $(tmp).children(".proc-name").text() + "|";
+                                buff += $(tmp).children(".arrival-time").val() + "|";
+                                buff += $(tmp).children(".burst-time").val() + "|";
+                                buff += $(tmp).children(".priority").val();
+
+                                buff += "}";
+
+                                data += buff;
+                                buff = "";
+                            });
+
+                            $("#target").html("<div class=\"cssload-container\"><div class='cssload-lt'></div>" +
+                                              "<div class='cssload-rt'></div>" +
+                                              "<div class='cssload-lb'></div>" +
+                                              "<div class='cssload-rb'></div></div>")
+
+                            $.ajax({
+                                url: "/ajax/process.java",
+                                data: data,
+                                type: "POST",
+                                success: function(result){
+                                    $("#target").html(result);
+                                    isRequesting = false;
+                                },
+                                error: function(request, status, error) {
+                                    console.log(error);
+                                    $("#target").html("<div class='alert alert-warning'>" +
+                                                      "<strong>Warning! </strong>" + error.toUpperCase() +
+                                                    "</div>");
+                                    isRequesting = false;
+                                },
+                                timeout: 3000
+                            });
+                        }
+
+                    }
+                });
+            },
+            error: function(request, status, error) {
+                console.log(error);
+                $("#target").html("<div class='alert alert-danger'>" +
+                                  "<strong>Error: Unable to load page! </strong>" + error.toUpperCase() +
+                                "</div>");
+            },
+            timeout: 3000
         });
         
-        $.post("/ajax/process.java", data, function(data, status) {
-            $("#target").html(data);
-        });
     });
+    
+    function checkForEmptyTbxes()
+    {
+        var i = 0;
+        $("input.form-control").each(function() {
+            if ($(this).attr("type") == "text") {
+                var str = $(this).val();
+                str = str.replace(/[^\d.-]/g, '');
+                if (str.length == 0) {
+                    i++;
+                    addErrorBorder($(this));
+                } else {
+                    var testMe = parseInt(str);
+                    if ($(this).hasClass("burst-time") && testMe <= 0) {
+                        i++;
+                        addErrorBorder($(this));
+                    } else if (testMe < 0) {
+                        i++;
+                        addErrorBorder($(this));
+                    } else {
+                        $(this).removeClass("error-outline");
+                    }
+                }
+            }
+                
+        });
+        console.log(i);
+        return i;
+    }
+    
+    function addErrorBorder(control)
+    {
+        $(control).addClass("error-outline");
+        $(control).on("change", function(){
+             $(this).removeClass("error-outline");  
+        });
+    }
+    
+    function removeElem() {
+        var par = $(this).parent().parent();
+        $(par).addClass("fadeOut").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+            $(this).remove();
+        });
+    }
 });
 </script>
