@@ -71,6 +71,7 @@ public class SockThread extends Thread {
         // get requested page
         // reqPage = sb.substring(sb.indexOf("GET ") + 4, sb.indexOf("HTTP/")-1);
 
+
         return ret;
     }
 
