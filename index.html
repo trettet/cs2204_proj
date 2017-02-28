@@ -7,11 +7,27 @@
     <link rel="stylesheet" type="text/css" href="css/ajaxloader.css">
     <link rel="stylesheet" type="text/css" href="css/ajaxloader2.css">
     <link rel="stylesheet" type="text/css" href="css/animate.css">
-    <link rel="stylesheet" type="text/css" href="css/stylize.css">
     <link rel="stylesheet" type="text/css" href="css/sidebar.css">
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Lato">
-    <style>       
+    <style>  
+        .mainwrapper {
+            margin-top: 15px;
+        }
         
+        body {
+            background-color: #202020;
+            overflow-x: hidden;
+            font-family: 'Lato', serif;
+        }
+
+        
+        h1, h2, h3, h4, h5, h6, h7, h8, p, tr {
+            color: #f4f4f4;
+        }
+
+        #target {
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -20,19 +36,22 @@
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-            <button class="btn btn-burger hidden-xs navbar-btn burger pull-left" style="margin-right: 10px"><span class="glyphicon glyphicon-menu-hamburger"></span></button>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <button class="btn btn-burger active-burger hidden-xs navbar-btn burger pull-left" style="margin-right: 10px">
+                <span class="glyphicon glyphicon-menu-hamburger"></span>
+            </button>
           <a class="navbar-brand" href="#">CS2204 Final Project</a>
         </div>
       </div><!-- /.container-fluid -->
     </nav>
+    
     <div id="wrapper">
-    <div id="sidebar-wrapper" class="hidden-xs">
+        <div id="sidebar-wrapper" class="hidden-xs">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
                     <a href="#">
@@ -47,10 +66,20 @@
                 </li>
                 <li>
                     <a href="#">Advantages and Disadvantages</a>
+                </li>
                 <li class="sidebar-brand">
                     <a href="#">
                         Least Recently Used (LRU) Caching
                     </a>
+                </li>
+                <li>
+                    <a href="#" id="lruDash">Dashboard</a>
+                </li>
+                <li>
+                    <a href="#">About the Algorithm</a>
+                </li>
+                <li>
+                    <a href="#">Advantages and Disadvantages</a>
                 </li>
             </ul>
         </div>
@@ -70,16 +99,30 @@
 new WOW().init();
 var rows = 0;    
 var isRequesting = false;
+var prioCSS = $('<link rel="stylesheet" id="prioCSS" type="text/css" href="css/stylize.css">');
 $(function(){    
     
     
     $(".btn-burger").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
+        $(".btn-burger").toggleClass("active-burger");
+    });
+    
+    $("#lruDash").click(function(e){
+        e.preventDefault();
+        $("#prioCSS").remove();
+        $.ajax({
+            url: "lru.html",
+            success: function(result) {
+                $("#loadhere").html(result);
+            }
+        });
     });
     
     $("#prioDash").click(function(e){
         e.preventDefault();
+        $("head").append(prioCSS);
         $("#loadhere").html("<div class='cssload-thecube'>" +
 	       "<div class='cssload-cube cssload-c1'></div>" +
 	       "<div class='cssload-cube cssload-c2'></div>" +
@@ -91,6 +134,8 @@ $(function(){
             url:"priopreemptive.html",
             success: function(result) {
                 $("#loadhere").html(result);
+                rows = 0;    
+                isRequesting = false;
                 
                 $(".btn-remove").on("click", function(e) {
                     e.preventDefault();

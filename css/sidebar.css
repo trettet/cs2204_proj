@@ -117,3 +117,29 @@
         margin-right: 0;
     }
 }
+
+
+.navbar-inverse {
+    background-color: #262626;
+}
+
+.btn-burger, .btn-burger:focus {
+    color: #f4f4f4;
+    background-color: #252525;
+    border: 1px #3a3a3a solid;
+}
+
+.btn-burger:active {
+    color: #f4f4f4;
+    background-color: #070707;
+}
+
+.btn-burger:hover {
+    color: #f4f4f4;
+}
+
+.active-burger, .active-burger:active,
+.active-burger:focus {
+    color: #f4f4f4;
+    background-color: #070707;
+}

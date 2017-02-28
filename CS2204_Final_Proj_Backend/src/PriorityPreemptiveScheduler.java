@@ -121,7 +121,7 @@ public class PriorityPreemptiveScheduler
         double curr = delay*-1;
         if (ganttMaster.getSize() > 0) {
             st.write("<h2>Gantt Chart</h2>");
-            st.write("<div class='row'><div class='col-xs-12'><table class='table table-borderless'><tr>");
+            st.write("<div id='gantt-chart' class='row'><div class='col-xs-12'><table class='table table-borderless'><tr>");
 
             for (String pName : ganttMaster.getPNameList()) {
                 st.write("<td class='success wow fadeIn' data-wow-delay='"+ (curr=curr+delay) +"s'><h4 class='text-center'><strong>" + pName + "</strong></h4></td>");
