@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="CS2205_Backend:jar" />
+      <artifact name="CS2204_Final_Proj_Backend:jar" />
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
@@ -39,7 +39,7 @@
       <file leaf-file-name="PriorityPreemptiveScheduler.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/PriorityPreemptiveScheduler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="22">
+            <state relative-caret-position="682">
               <caret line="165" column="76" selection-start-line="165" selection-start-column="73" selection-end-line="165" selection-end-column="76" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -166,7 +166,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -201,15 +203,13 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Font" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="project.structure.last.edited" value="Artifacts" />
-    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
@@ -234,6 +234,9 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="" />
       <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="CompoundRunConfigurationType" factoryName="Compound Run Configuration">
       <method />
     </configuration>
     <configuration default="true" type="JarApplication" factoryName="JAR Application">
@@ -819,7 +822,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/PriorityPreemptiveScheduler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22">
+        <state relative-caret-position="682">
           <caret line="165" column="76" selection-start-line="165" selection-start-column="73" selection-end-line="165" selection-end-column="76" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -833,7 +836,7 @@
       <state key="ArtifactsStructureConfigurable.UI">
         <settings>
           <artifact-editor />
-          <last-edited>CS2205_Backend:jar</last-edited>
+          <last-edited>CS2204_Final_Proj_Backend:jar</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -869,7 +872,7 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>CS2205_Backend</last-edited>
+          <last-edited>CS2204_Final_Proj_Backend</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

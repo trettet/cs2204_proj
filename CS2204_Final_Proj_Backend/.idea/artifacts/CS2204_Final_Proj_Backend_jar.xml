@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="CS2204_Final_Proj_Backend:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/CS2204_Final_Proj_Backend_jar</output-path>
+    <root id="archive" name="CS2204_Final_Proj_Backend.jar">
+      <element id="module-output" name="CS2204_Final_Proj_Backend" />
+    </root>
+  </artifact>
+</component>
