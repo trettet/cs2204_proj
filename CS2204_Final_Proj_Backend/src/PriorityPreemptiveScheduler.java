@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -117,26 +118,27 @@ public class PriorityPreemptiveScheduler
         st.write("\r\n");
 
         // response here
-        final double delay = 0.4;
-        double curr = delay*-1;
+        BigDecimal delay =BigDecimal.valueOf(0.80);
+        BigDecimal curr = delay.negate();
         if (ganttMaster.getSize() > 0) {
-            st.write("<h2>Gantt Chart</h2>");
-            st.write("<div id='gantt-chart' class='row'><div class='col-xs-12'><table class='table table-borderless'><tr>");
+            st.write("<h2 class='wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'>Gantt Chart</h2>");
+            st.write("<div class='row'><div class='col-xs-12'><div id='gantt-chart-process'>");
 
-            for (String pName : ganttMaster.getPNameList()) {
-                st.write("<td class='success wow fadeIn' data-wow-delay='"+ (curr=curr+delay) +"s'><h4 class='text-center'><strong>" + pName + "</strong></h4></td>");
+            for (GanttChartObj ganttObj : ganttMaster.getList()) {
+                st.write("<span class='process' style='width:"+ ganttObj.getWidth()+"%'><span class='background' style='animation-delay:"+(curr=curr.add(delay)) +"s'><h4 class='text-center' style='animation-delay:"+curr.add(BigDecimal.valueOf(0.3))+"s'><strong>" + ganttObj.getPName() + "</strong></h4></span></span>");
             }
 
-            st.write("</tr><tr>");
+            st.write("</span></div><div id='gantt-chart-nos'>'");
 
             long[] ganttNums = ganttMaster.getNums();
 
             for (i = 0; i < ganttNums.length - 2; i++) {
-                st.write("<td class='danger'>" + ganttNums[i] + "</td>");
+                st.write("<span class='danger'>" + ganttNums[i] + "</span>");
             }
-            st.write("<td class='danger'>" + ganttNums[i] + "<div class='pull-right'>" + ganttNums[i + 1] + "</div></td>");
+            long lastTime = ganttNums[i+1];
+            st.write("<span class='danger'>" + ganttNums[i] + "<div class='pull-right' style='width:'>" + lastTime + "</div></span>");
 
-            st.write("</tr></table></div></div>");
+            st.write("</div></div></div>");
 
             for (ProcessObject trav : orgPList) {
                 newElem = new TableObject(trav.getPName());
@@ -160,31 +162,31 @@ public class PriorityPreemptiveScheduler
                 taList.add(new TableObject(trav.getPName(), ganttMaster.getLastOccurrence(trav.getPName()).getEnd(), trav.getArrival()));
             }
             // ------- TA TABLE -----------
-
-            st.write("<div class='row'><div class='col-md-6'><h3>Turnaround Time</h3>");
+            delay = BigDecimal.valueOf(0.45);
+            st.write("<div class='row'><div class='col-md-6'><h3  class='wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'>Turnaround Time</h3>");
             st.write("<table class='table table-borderless'>" +
-                    "<th class='col-md-2'>Process</th>" +
-                    "<th>Equation</th>" +
-                    "<th>Result</th>");
+                    "<th  class='col-md-2 wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'>Process</th>" +
+                    "<th class='wow flipInX' data-wow-delay='"+curr+"s'>Equation</th>" +
+                    "<th class='wow flipInX' data-wow-delay='"+curr+"s'>Result</th>");
 
             for (TableObject trav : taList) {
-                st.write("<tr><td>" + trav.getPName() + "</td>  <td>" + trav.getFirstEqStr(" ") + "</td>  <td>" + trav.getFirstResult() + " ms</td> </tr>");
+                st.write("<tr class='wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'><td>" + trav.getPName() + "</td>  <td>" + trav.getFirstEqStr(" ") + "</td>  <td>" + trav.getFirstResult() + " ms</td> </tr>");
                 avgTA += trav.getFirstResult();
             }
             avgTA /= orgPList.size();
 
-            st.write("<tr><td colspan='3'><h4>Average Turnaround Time: " + String.format("%.2f ms", avgTA) + "</h3></td></tr>");
+            st.write("<tr class='wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'><td colspan='3'><h4>Average Turnaround Time: " + String.format("%.2f ms", avgTA) + "</h3></td></tr>");
             st.write("</table></div>");
 
             // ------- TA TABLE -----------
-            st.write("<div class='col-md-6'><h3>Waiting Time</h3>");
+            st.write("<div class='col-md-6'><h3 class='wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'>Waiting Time</h3>");
             st.write("<table class='table table-borderless'>" +
-                    "<th class='col-md-2'>Process</th>" +
-                    "<th>Equation(s)</th>" +
-                    "<th>Result</th>");
+                    "<th class='col-md-2 wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'>Process</th>" +
+                    "<th class='wow flipInX' data-wow-delay='"+curr+"s'>Equation(s)</th>" +
+                    "<th class='wow flipInX' data-wow-delay='"+curr+"s'>Result</th>");
 
             for (TableObject trav : wtList) {
-                st.write("<tr><td>" + trav.getPName() + "</td><td>");
+                st.write("<tr class='wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'><td>" + trav.getPName() + "</td><td>");
                 i = 0;
                 int len = trav.getEqCount();
                 if (len != 1) {
@@ -199,7 +201,7 @@ public class PriorityPreemptiveScheduler
             }
             avgWT /= orgPList.size();
 
-            st.write("<tr><td colspan='3'><h4>Average Waiting Time: " + String.format("%.2f ms", avgWT) + "</h4></td></tr>");
+            st.write("<tr class='wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'><td colspan='3'><h4>Average Waiting Time: " + String.format("%.2f ms", avgWT) + "</h4></td></tr>");
             st.write("</table></div></div>");
             st.write("<script>console.log('Priority Preemptive Scheduling done . . .')</script>");
         } else {

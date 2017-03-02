@@ -10,14 +10,33 @@
     <link rel="stylesheet" type="text/css" href="css/sidebar.css">
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Lato">
     <style>  
+        .navbar-inverse {
+            background-color: rgba(0,0,0, 0.1);
+            box-shadow: 1px 2px 4px rgba(0,0,0, 0.35);
+            height: 65px;
+            border: none;
+            padding-top: 8px;
+            padding-bottom: 5px;
+        }
         .mainwrapper {
             margin-top: 15px;
         }
         
         body {
-            background-color: #202020;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             overflow-x: hidden;
             font-family: 'Lato', serif;
+            background: linear-gradient(270deg, #001b23, #00393a, #004d4e, #006272);
+            background-size: 800% 800%;
+
+            animation: bg-anim 320s ease infinite;
+        }
+        
+        @keyframes bg-anim {
+            0%{background-position:0% 50%}
+            50%{background-position:100% 50%}
+            100%{background-position:0% 50%}
         }
 
         
@@ -27,6 +46,59 @@
 
         #target {
             margin-top: 10px;
+        }
+        
+        
+        
+        #gantt-chart-process span.process{
+            display: inline-block;
+            background-color: transparent;
+            min-width: 0px;
+            padding: 0px;
+        }
+        
+        #gantt-chart-process span.process > span.background {
+            width: 0px;
+            min-width: 0px;
+            height: 100%;
+            background-color: rgb(100, 149, 237);
+            display: inline-block;
+            animation: ganntElementUnfold 0.95s ease forwards;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            transition: 0.35s all ease;            
+        }
+        
+        #gantt-chart-process span.process > span.background:hover {
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.45);
+            transform: scale(1.1);
+            z-index: 999;
+        }
+        
+        #gantt-chart-process span.process > span.background > h4 {
+            opacity: 0;
+            animation: fadeIn-Cust 0.3s ease;
+            animation-fill-mode: forwards;
+        }
+        
+        #gantt-chart-process span.process:last-child > span.background {
+            animation: ganntElementUnfold-lastchild 1s ease forwards;
+        }
+        
+        @keyframes ganntElementUnfold {
+            from{ width: 0%; }
+            to { width: 100%;
+                 border-right: 1px rgb(63, 121, 226) solid; }
+        }
+        
+        @keyframes ganntElementUnfold-lastchild {
+            from{ width: 0%; }
+            to { width: 100%; }
+        }
+        
+        @keyframes fadeIn-Cust {
+            from{ opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
@@ -96,7 +168,7 @@
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/wow.min.js"></script>
 <script>
-new WOW().init();
+new WOW({offset: -9999}).init();
 var rows = 0;    
 var isRequesting = false;
 var prioCSS = $('<link rel="stylesheet" id="prioCSS" type="text/css" href="css/stylize.css">');

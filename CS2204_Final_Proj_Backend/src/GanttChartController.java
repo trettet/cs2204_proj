@@ -1,6 +1,7 @@
+import sun.awt.image.ImageWatched;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 /**
@@ -14,6 +15,17 @@ public class GanttChartController
     {
         ganttChart = new ArrayList<>();
         last = -1;
+    }
+
+    private void addWidthProportion()
+    {
+        long totalWidth;
+        totalWidth = ganttChart.get(getLast()).getEnd();
+        System.out.print(totalWidth);
+        int i;
+        for(i=0; i<getSize(); i++) {
+            ganttChart.get(i).setWidth((ganttChart.get(i).getEnd() - ganttChart.get(i).getStart()) /(double)totalWidth * 100);
+        }
     }
 
     public void addProcess(String pName, long started, long ended)
@@ -35,7 +47,14 @@ public class GanttChartController
 
     public ArrayList<String> getPNameList()
     {
+        addWidthProportion();
         return ganttChart.stream().map(GanttChartObj::getPName).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public ArrayList<GanttChartObj> getList()
+    {
+        addWidthProportion();
+        return ganttChart;
     }
 
     public long[] getNums() {
