@@ -1,61 +1,194 @@
-<link rel="stylesheet" id="prioCSS" type="text/css" href="css/stylize.css">
-<link rel="stylesheet" id="prioCSS" type="text/css" href="css/btn-outlined.css">
+<link rel="stylesheet" type="text/css" href="css/stylize.css">
+<link rel="stylesheet" type="text/css" href="css/btn-outlined.css">
 <link rel="stylesheet" type="text/css" href="css/ajaxloader.css">
 <link rel="stylesheet" type="text/css" href="css/custom-textbox.css">
+<link rel="stylesheet" type="text/css" href="css/custom-pills.css">
 <link rel="stylesheet" type="text/css" href="css/gantt-chart.css">
-<div class="mainwrapper">
-
-    <div class="row">
-        <div class="col-xs-3">
-            <button class="btn btn-outlined btn-success" id="btn-add"><i class="fa fa-plus" aria-hidden="true"></i> Add Process</button>
-        </div>
-        <div class="col-xs-3">
-            <button class="btn btn-outlined btn-primary" id="btn-generate"><i class="fa fa-eye" aria-hidden="true"></i> Schedule Processes</button>
-        </div>
-    </div>
+<style>
+    .tab-content {
+        padding-top: 10px;
+    }
     
-    <div class="row">
-        <div class="col-xs-12">
-            <table id="tableProc" class="table table-borderless text-center">
-                <thead>
-                    <tr>
-                        <th class="col-md-2">Proccess Name</th>
-                        <th class="col-md-3">Arrival Time (ms)</th>
-                        <th class="col-md-3">CPU Burst Time (ms)</th>
-                        <th class="col-md-1">Priority</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    .btn-container {
+        padding-left: 20%;
+    }
+    
+    .row-no-padding > [class*="col-"] {
+        padding-left: 0 !important;
+        padding-right: 10px !important;
+    }
+    
+    .proc-col > .controls {
+        animation: fadeShitOut 0.3s forwards;
+        margin-left: -20px;
+        visibility: hidden;
+    }
+    
+    .proc-col > .controls > a {
+        transition: 0.3s all;
+        text-decoration: none;
+        margin-right: 3px;
+        font-size: 2em;
+    }
+    
+    .proc-col:hover .controls {
+        animation: fadeShitIn 0.3s forwards;
+    }
+    
+    @keyframes fadeShitIn {
+        from {visibility: hidden;
+            opacity:  0;
+            margin-left: -20px; }
+        to {visibility: visible;opacity: 1;
+        margin-left: 5px; }
+    }
+    
+    @keyframes fadeShitOut {
+        from {visibility: visible;opacity: 1;
+        margin-left: 5px; }
+        to {visibility: hidden;
+            opacity:  0;
+            margin-left: -20px; }
+    }
+    
+    .proc-name {
+        font-size: 22px;
+    }
+    
+    .proc-col > .controls > a.btn-remove {
+        color: #D61313;
+    }
+    
+    .proc-col > .controls > a.btn-remove:hover {
+        color: #FF6969;
+    }
+    
+    .proc-col > .controls > a.btn-edit {
+        color: #3D72C6;
+    }
+    
+    .proc-col > .controls > a.btn-edit:hover {
+        color: #8AADE5;
+    }
+</style>
+<div class="row">
+    <div class="col-xs-12">
+        <ul class="nav nav-pills">
+            <li class="active"><a data-toggle="tab" href="#process-table">Process Table</a></li>
+            <li><a data-toggle="tab" href="#gantt-chart">Gantt Chart</a></li>
+            <li><a data-toggle="tab" href="#turnaround-time">Turnaround Time Table</a></li>
+            <li><a data-toggle="tab" href="#waiting-time">Waiting Time Table</a></li>
+        </ul>
 
-    <div class="row">
-        <div class="col-xs-12">
-            <div id="target">
+        <div class="tab-content">
+            <div id="process-table" class="tab-pane fade in active">
+                <div class="row row-no-padding">
+                    <div class="col-xs-offset-3 col-xs-3">
+                        <button class="btn btn-outlined btn-success pull-right" id="btn-add"><i class="fa fa-plus" aria-hidden="true"></i> Add Process</button>
+                    </div>
+                    
+                    <div class="col-xs-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control line-box" id="cust-add-no" maxlength="1">
+                            <div class="input-group-btn">
+                                <button class="btn btn-outlined btn-warning" id="btn-add-cust"><i class="fa fa-plus" aria-hidden="true"></i> Add Multiple Process</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-3">
+                    <button class="btn btn-outlined btn-primary" id="btn-generate"><i class="fa fa-eye" aria-hidden="true"></i> Schedule Processes</button>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table id="tableProc" class="table table-borderless text-center">
+                        <thead>
+                            <tr>
+                                <th class="col-md-2">Proccess Name</th>
+                                <th class="col-md-3">Arrival Time (ms)</th>
+                                <th class="col-md-3">CPU Burst Time (ms)</th>
+                                <th class="col-md-1">Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+          <div id="gantt-chart" class="tab-pane fade">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div id='preloader' style='display:none' class="cssload-container">
+                        <div class='cssload-lt'></div>
+                        <div class='cssload-rt'></div>
+                        <div class='cssload-lb'></div>
+                        <div class='cssload-rb'></div>
+                    </div>
+                    <div id="target">
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div id="turnaround-time" class="tab-pane fade">
+            <h3>Menu 2</h3>
+            <p>Some content in menu 2.</p>
+          </div>
+            <div id="waiting-time" class="tab-pane fade">
+            <h3>Menu 2</h3>
+            <p>Some content in menu 3.</p>
+          </div>
         </div>
     </div>
 </div>
 <script>
 var rows = 0;
-$(".btn-remove").on("click", function(e) {
+$("#tableProc tbody").on("click", "tr > .proc-col > .controls > a.btn-remove", function(){
+    var par = $(this).parent().parent().parent();
+    $(par).addClass("fadeOutRight").css("animation-duration", "0.6s").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+        $(this).remove();
+    });
+});
+    
+$("#tableProc tbody").on("click", "tr > .proc-col > .controls > a.btn-edit", function(e){
     e.preventDefault();
-    removeElem();
+    var par = $(this).parent().parent();
+    $(par).children().hide();
+    $(par).append("<div class='input-group'><input type='text' class='form-control new-name' maxlength='15' value='"+$(par).children(".proc-name").text() +
+                            "'> <span class='input-group-btn'><button class='btn btn-primary btn-save'>Save</button></span></div>");
+
+
+});
+    
+$("#tableProc tbody").on("click","tr > .proc-col > .input-group > .input-group-btn button.btn-save", function(e) {
+    e.preventDefault();
+    var proc_col = $(this).parent().parent().parent();
+    $(proc_col).children(".proc-name").text($(this).parent().siblings(".new-name").val());
+    $(this).parent().parent().remove();
+    $(proc_col).children().show();
 });
 
 $("#btn-add").on("click", function() {
-    var elem = $("<tr class='animated fadeIn'><td><h4 class='proc-name'><strong>P" + ++rows +"</strong></h4><a href='#' class='btn-remove'>"+
-                    "<i class='fa fa-times' aria-hidden='true'></i></a></td>" +
-                    "<td><input type='text' class='form-control arrival-time' required></td>" +
-                    "<td><input type='text' class='form-control burst-time' required></td>" +
-                    "<td><input type='text' class='form-control priority' required></td>" +
+    var elem = $("<tr class='animated fadeInLeft' style='animation-duration: 0.8s'><td class='proc-col'><h4 class='proc-name'>P" + ++rows +
+                    "</h4><span class='controls'><a href='javascript:;' class='btn-edit'><i class='fa fa-pencil-square' aria-hidden='true'></i> </a>"+
+                    "<a href='javascript:;' class='btn-remove'><i class='fa fa-trash' aria-hidden='true'></i></a></span></td>" +
+                    "<td><input type='text' class='form-control line-box arrival-time' required></td>" +
+                    "<td><input type='text' class='form-control line-box burst-time' required></td>" +
+                    "<td><input type='text' class='form-control line-box priority' required></td>" +
                     "</tr>");
 
-    var elem= $("#tableProc tbody").append(elem);
-
-    $(".btn-remove").on("click", removeElem);
+    $("#tableProc tbody").append(elem);
+});
+    
+$("#btn-add-cust").on("click", function() {
+    var str = $("#cust-add-no").val();
+    str = str.replace(/[^\d.-]/g, '');
+    if (str.length != 0) {
+        var toAdd = parseInt(str);
+        for(var i=0; i<toAdd; i++) {
+            $("#btn-add").click();
+        }
+    } else {
+        addErrorBorder($("#cust-add-no"));
+    }
 });
 
 $("#btn-generate").on("click", function(){
@@ -63,9 +196,37 @@ $("#btn-generate").on("click", function(){
         var emptyTbxes = checkForEmptyTbxes();
 
         if (emptyTbxes == 0) {
-            isRequesting = true;
             var data = "";
             var buff = "";
+            isRequesting = true;
+            activeTab("gantt-chart");
+            
+            $('#target').fadeOut(function(){
+                $('#preloader').fadeIn(function() {
+                    $.ajax({
+                        url: "/ajax/process.java",
+                        data: data,
+                        type: "POST",
+                        success: function(result){
+                            $("#target").html(result);
+
+                            setTimeout(function(){
+                                $('#preloader').fadeOut(function(){ $('#target').fadeIn() });
+                                isRequesting = false;
+                            }, 500);
+                        },
+                        error: function(request, status, error) {
+                            console.log(error);
+                            $("#target").html("<div class='alert alert-warning'>" +
+                                              "<strong>Warning! </strong>" + error.toUpperCase() +
+                                            "</div>");
+                            isRequesting = false;
+                        },
+                        timeout: 3000
+                    });
+                }); 
+            });
+            
             $("#tableProc > tbody > tr").each(function(){
                 var tmp = $(this).children("td");
                 buff += "{";
@@ -80,29 +241,6 @@ $("#btn-generate").on("click", function(){
                 data += buff;
                 buff = "";
             });
-
-            $("#target").html("<div class=\"cssload-container\"><div class='cssload-lt'></div>" +
-                              "<div class='cssload-rt'></div>" +
-                              "<div class='cssload-lb'></div>" +
-                              "<div class='cssload-rb'></div></div>")
-
-            $.ajax({
-                url: "/ajax/process.java",
-                data: data,
-                type: "POST",
-                success: function(result){
-                    $("#target").html(result);
-                    isRequesting = false;
-                },
-                error: function(request, status, error) {
-                    console.log(error);
-                    $("#target").html("<div class='alert alert-warning'>" +
-                                      "<strong>Warning! </strong>" + error.toUpperCase() +
-                                    "</div>");
-                    isRequesting = false;
-                },
-                timeout: 3000
-            });
         }
 
     }
@@ -111,7 +249,7 @@ $("#btn-generate").on("click", function(){
 function checkForEmptyTbxes()
 {
     var i = 0;
-    $("input.form-control").each(function() {
+    $("#tableProc input.form-control").each(function() {
         if ($(this).attr("type") == "text") {
             var str = $(this).val();
             str = str.replace(/[^\d.-]/g, '');
@@ -141,14 +279,16 @@ function addErrorBorder(control)
 {
     $(control).addClass("error-outline");
     $(control).on("change", function(){
-         $(this).removeClass("error-outline");  
+        var str = $(this).val();
+        str = str.replace(/[^\d.-]/g, '');
+        if (str.length > 0) {
+            $(this).removeClass("error-outline");  
+        }
     });
 }
-
-function removeElem() {
-    var par = $(this).parent().parent();
-    $(par).addClass("fadeOut").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-        $(this).remove();
-    });
-}
+    
+function activeTab(tab){
+    $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+    $('.nav-pills a[href="#' + tab + '"]').tab('show');
+};
 </script>

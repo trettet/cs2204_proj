@@ -17,8 +17,8 @@
             padding-top: 8px;
             padding-bottom: 5px;
         }
-        .mainwrapper {
-            margin-top: 15px;
+        #loadhere {
+            padding-top: 28px;
         }
         
         body {
@@ -100,8 +100,16 @@
         </div>
         <!-- /#sidebar-wrapper -->
     
-        <div class="container" id="loadhere">
-            
+        <div class="container">
+            <div id='loadhere'>
+                
+            </div>
+            <div id='preloader_main' style="display:none;" class='cssload-thecube'>
+                <div class='cssload-cube cssload-c1'></div>
+                <div class='cssload-cube cssload-c2'></div>
+                <div class='cssload-cube cssload-c4'></div>
+                <div class='cssload-cube cssload-c3'></div>
+            </div>
         </div>
     </div>
 </body>
@@ -122,51 +130,40 @@ $(function(){
     
     $("#lruDash").click(function(e){
         e.preventDefault();
-        showPreLoader("#loadhere");
-        $.ajax({
-            url: "lru.html",
-            success: function(result) {
-                $("#loadhere").html(result);
-            },
-            error: function(request, status, error) {
-                console.log(error);
-                $("#target").html("<div class='alert alert-danger'>" +
-                                  "<strong>Error: Unable to load page! </strong>" + error.toUpperCase() +
-                                "</div>");
-            },
-            type: "POST"
-        });
+        fetchPage("lru.html");
     });
     
     $("#prioDash").click(function(e){
         e.preventDefault();
-        showPreLoader("#loadhere");
-        $.ajax({
-            url:"priopreemptive.html",
-            success: function(result) {
-                $("#loadhere").html(result);
-                isRequesting = false;
-            },
-            error: function(request, status, error) {
-                console.log(error);
-                $("#target").html("<div class='alert alert-danger'>" +
-                                  "<strong>Error: Unable to load page! </strong>" + error.toUpperCase() +
-                                "</div>");
-            },
-            timeout: 3000,
-            type: "POST"
+        fetchPage("priopreemptive.html");
+    });
+});
+    
+function fetchPage(urlString)
+{
+    $('#loadhere').fadeOut(150, function(){
+        $('#preloader_main').fadeIn(150, function() {
+            $.ajax({
+                url: urlString,
+                success: function(result) {
+                    $("#loadhere").html(result);
+                    setTimeout(function(){
+                        $("#preloader_main").fadeOut(function() {
+                            $("#loadhere").fadeIn();
+                        });
+                        isRequesting = false;
+                    },1000);
+                },
+                error: function(request, status, error) {
+                    console.log(error);
+                    $("#target").html("<div class='alert alert-danger'>" +
+                                      "<strong>Error: Unable to load page! </strong>" + error.toUpperCase() +
+                                    "</div>");
+                },
+                type: "POST"
+            });
         });
-        
     });
     
-    function showPreLoader(selector)
-    {
-        $(selector).html("<div class='cssload-thecube'>" +
-	       "<div class='cssload-cube cssload-c1'></div>" +
-	       "<div class='cssload-cube cssload-c2'></div>" +
-	       "<div class='cssload-cube cssload-c4'></div>" +
-	       "<div class='cssload-cube cssload-c3'></div>" +
-                            "</div>");
-    }
-});
+}
 </script>

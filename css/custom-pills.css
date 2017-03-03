@@ -1,0 +1,27 @@
+.nav-pills>li>a {
+    border-radius: 0px;
+    border-bottom: 2px transparent;
+    transition: 0.45s all;
+    color: rgb(100,100,100);
+}
+
+.nav-pills>li>a:hover {
+    background: none;
+    border-bottom: 2px transparent;
+    color: rgb(180,180,180);
+}
+
+.nav-pills>li.active>a:hover {
+    background: none;
+}
+
+.nav-pills>li>a:visited,
+.nav-pills>li>a:focus,
+.nav-pills>li.active>a:visited,
+.nav-pills>li.active>a:active,
+.nav-pills>li.active>a:focus,
+.nav-pills>li.active>a{
+    background: none;
+    color: white;
+    border-bottom: 2px white solid;
+}
