@@ -1,0 +1,50 @@
+#gantt-chart-process span.process{
+    display: inline-block;
+    background-color: transparent;
+    min-width: 0px;
+    padding: 0px;
+}
+
+#gantt-chart-process span.process > span.background {
+    width: 0px;
+    min-width: 0px;
+    height: 100%;
+    background-color: rgb(100, 149, 237);
+    display: inline-block;
+    animation: ganntElementUnfold 0.95s ease forwards;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    transition: 0.35s all ease;            
+}
+
+#gantt-chart-process span.process > span.background:hover {
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.45);
+    transform: scale(1.1);
+    z-index: 999;
+}
+
+#gantt-chart-process span.process > span.background > h4 {
+    opacity: 0;
+    animation: fadeIn-Cust 0.3s ease;
+    animation-fill-mode: forwards;
+}
+
+#gantt-chart-process span.process:last-child > span.background {
+    animation: ganntElementUnfold-lastchild 1s ease forwards;
+}
+
+@keyframes ganntElementUnfold {
+    from{ width: 0%; }
+    to { width: 100%;
+         border-right: 1px rgb(63, 121, 226) solid; }
+}
+
+@keyframes ganntElementUnfold-lastchild {
+    from{ width: 0%; }
+    to { width: 100%; }
+}
+
+@keyframes fadeIn-Cust {
+    from{ opacity: 0; }
+    to { opacity: 1; }
+}

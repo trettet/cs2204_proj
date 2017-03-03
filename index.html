@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>CS2204 Final Project</title>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/ajaxloader.css">
     <link rel="stylesheet" type="text/css" href="css/ajaxloader2.css">
     <link rel="stylesheet" type="text/css" href="css/animate.css">
     <link rel="stylesheet" type="text/css" href="css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Lato">
     <style>  
         .navbar-inverse {
-            box-shadow: 1px 2px 3px rgba(0,0,0, 0.35);
+            box-shadow: 1px 2px 2px rgba(0,0,0, 0.35);
             height: 65px;
             border: none;
             padding-top: 8px;
@@ -26,10 +26,7 @@
             background-attachment: fixed;
             overflow-x: hidden;
             font-family: 'Lato', serif;
-            background: linear-gradient(270deg, #001b23, #00393a, #004d4e, #006272);
-            background-size: 800% 800%;
-
-            animation: bg-anim 320s ease infinite;
+            background: #202020;
         }
         
         @keyframes bg-anim {
@@ -45,59 +42,6 @@
 
         #target {
             margin-top: 10px;
-        }
-        
-        
-        
-        #gantt-chart-process span.process{
-            display: inline-block;
-            background-color: transparent;
-            min-width: 0px;
-            padding: 0px;
-        }
-        
-        #gantt-chart-process span.process > span.background {
-            width: 0px;
-            min-width: 0px;
-            height: 100%;
-            background-color: rgb(100, 149, 237);
-            display: inline-block;
-            animation: ganntElementUnfold 0.95s ease forwards;
-            padding-top: 10px;
-            padding-bottom: 10px;
-            transition: 0.35s all ease;            
-        }
-        
-        #gantt-chart-process span.process > span.background:hover {
-            box-shadow: 1px 1px 2px rgba(0,0,0,0.45);
-            transform: scale(1.1);
-            z-index: 999;
-        }
-        
-        #gantt-chart-process span.process > span.background > h4 {
-            opacity: 0;
-            animation: fadeIn-Cust 0.3s ease;
-            animation-fill-mode: forwards;
-        }
-        
-        #gantt-chart-process span.process:last-child > span.background {
-            animation: ganntElementUnfold-lastchild 1s ease forwards;
-        }
-        
-        @keyframes ganntElementUnfold {
-            from{ width: 0%; }
-            to { width: 100%;
-                 border-right: 1px rgb(63, 121, 226) solid; }
-        }
-        
-        @keyframes ganntElementUnfold-lastchild {
-            from{ width: 0%; }
-            to { width: 100%; }
-        }
-        
-        @keyframes fadeIn-Cust {
-            from{ opacity: 0; }
-            to { opacity: 1; }
         }
     </style>
 </head>
@@ -168,12 +112,8 @@
 <script type="text/javascript" src="js/wow.min.js"></script>
 <script>
 new WOW({offset: -9999}).init();
-var rows = 0;    
 var isRequesting = false;
-var prioCSS = $('<link rel="stylesheet" id="prioCSS" type="text/css" href="css/stylize.css">');
-$(function(){    
-    
-    
+$(function(){
     $(".btn-burger").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
@@ -182,98 +122,11 @@ $(function(){
     
     $("#lruDash").click(function(e){
         e.preventDefault();
-        $("#prioCSS").remove();
+        showPreLoader("#loadhere");
         $.ajax({
             url: "lru.html",
             success: function(result) {
                 $("#loadhere").html(result);
-            }
-        });
-    });
-    
-    $("#prioDash").click(function(e){
-        e.preventDefault();
-        $("head").append(prioCSS);
-        $("#loadhere").html("<div class='cssload-thecube'>" +
-	       "<div class='cssload-cube cssload-c1'></div>" +
-	       "<div class='cssload-cube cssload-c2'></div>" +
-	       "<div class='cssload-cube cssload-c4'></div>" +
-	       "<div class='cssload-cube cssload-c3'></div>" +
-                            "</div>");
-        
-        $.ajax({
-            url:"priopreemptive.html",
-            success: function(result) {
-                $("#loadhere").html(result);
-                rows = 0;    
-                isRequesting = false;
-                
-                $(".btn-remove").on("click", function(e) {
-                    e.preventDefault();
-                    removeElem();
-                });
-
-                $("#btn-add").on("click", function() {
-                    var elem = $("<tr class='animated fadeIn'><td><h4 class='proc-name'><strong>P" + ++rows +"</strong></h4><a href='#' class='btn-remove'><span class='glyphicon glyphicon-remove'></span></a></td>" +
-                                            "<td><input type='text' class='form-control arrival-time' required></td>" +
-                                            "<td><input type='text' class='form-control burst-time' required></td>" +
-                                            "<td><input type='text' class='form-control priority' required></td>" +
-                                            "</tr>");
-
-                    var elem= $("#tableProc tbody").append(elem);
-
-                    $(".btn-remove").on("click", removeElem);
-                });
-
-                $("#btn-generate").on("click", function(){
-                    if (isRequesting == false) {
-                        var emptyTbxes = checkForEmptyTbxes();
-
-                        if (emptyTbxes == 0) {
-                            isRequesting = true;
-                            var data = "";
-                            var buff = "";
-                            $("#tableProc > tbody > tr").each(function(){
-                                var tmp = $(this).children("td");
-                                buff += "{";
-
-                                buff += $(tmp).children(".proc-name").text() + "|";
-                                buff += $(tmp).children(".arrival-time").val() + "|";
-                                buff += $(tmp).children(".burst-time").val() + "|";
-                                buff += $(tmp).children(".priority").val();
-
-                                buff += "}";
-
-                                data += buff;
-                                buff = "";
-                            });
-
-                            $("#target").html("<div class=\"cssload-container\"><div class='cssload-lt'></div>" +
-                                              "<div class='cssload-rt'></div>" +
-                                              "<div class='cssload-lb'></div>" +
-                                              "<div class='cssload-rb'></div></div>")
-
-                            $.ajax({
-                                url: "/ajax/process.java",
-                                data: data,
-                                type: "POST",
-                                success: function(result){
-                                    $("#target").html(result);
-                                    isRequesting = false;
-                                },
-                                error: function(request, status, error) {
-                                    console.log(error);
-                                    $("#target").html("<div class='alert alert-warning'>" +
-                                                      "<strong>Warning! </strong>" + error.toUpperCase() +
-                                                    "</div>");
-                                    isRequesting = false;
-                                },
-                                timeout: 3000
-                            });
-                        }
-
-                    }
-                });
             },
             error: function(request, status, error) {
                 console.log(error);
@@ -281,53 +134,39 @@ $(function(){
                                   "<strong>Error: Unable to load page! </strong>" + error.toUpperCase() +
                                 "</div>");
             },
-            timeout: 3000
+            type: "POST"
+        });
+    });
+    
+    $("#prioDash").click(function(e){
+        e.preventDefault();
+        showPreLoader("#loadhere");
+        $.ajax({
+            url:"priopreemptive.html",
+            success: function(result) {
+                $("#loadhere").html(result);
+                isRequesting = false;
+            },
+            error: function(request, status, error) {
+                console.log(error);
+                $("#target").html("<div class='alert alert-danger'>" +
+                                  "<strong>Error: Unable to load page! </strong>" + error.toUpperCase() +
+                                "</div>");
+            },
+            timeout: 3000,
+            type: "POST"
         });
         
     });
     
-    function checkForEmptyTbxes()
+    function showPreLoader(selector)
     {
-        var i = 0;
-        $("input.form-control").each(function() {
-            if ($(this).attr("type") == "text") {
-                var str = $(this).val();
-                str = str.replace(/[^\d.-]/g, '');
-                if (str.length == 0) {
-                    i++;
-                    addErrorBorder($(this));
-                } else {
-                    var testMe = parseInt(str);
-                    if ($(this).hasClass("burst-time") && testMe <= 0) {
-                        i++;
-                        addErrorBorder($(this));
-                    } else if (testMe < 0) {
-                        i++;
-                        addErrorBorder($(this));
-                    } else {
-                        $(this).removeClass("error-outline");
-                    }
-                }
-            }
-                
-        });
-        console.log(i);
-        return i;
-    }
-    
-    function addErrorBorder(control)
-    {
-        $(control).addClass("error-outline");
-        $(control).on("change", function(){
-             $(this).removeClass("error-outline");  
-        });
-    }
-    
-    function removeElem() {
-        var par = $(this).parent().parent();
-        $(par).addClass("fadeOut").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-            $(this).remove();
-        });
+        $(selector).html("<div class='cssload-thecube'>" +
+	       "<div class='cssload-cube cssload-c1'></div>" +
+	       "<div class='cssload-cube cssload-c2'></div>" +
+	       "<div class='cssload-cube cssload-c4'></div>" +
+	       "<div class='cssload-cube cssload-c3'></div>" +
+                            "</div>");
     }
 });
 </script>

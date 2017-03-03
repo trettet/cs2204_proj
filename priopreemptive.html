@@ -1,4 +1,19 @@
+<link rel="stylesheet" id="prioCSS" type="text/css" href="css/stylize.css">
+<link rel="stylesheet" id="prioCSS" type="text/css" href="css/btn-outlined.css">
+<link rel="stylesheet" type="text/css" href="css/ajaxloader.css">
+<link rel="stylesheet" type="text/css" href="css/custom-textbox.css">
+<link rel="stylesheet" type="text/css" href="css/gantt-chart.css">
 <div class="mainwrapper">
+
+    <div class="row">
+        <div class="col-xs-3">
+            <button class="btn btn-outlined btn-success" id="btn-add"><i class="fa fa-plus" aria-hidden="true"></i> Add Process</button>
+        </div>
+        <div class="col-xs-3">
+            <button class="btn btn-outlined btn-primary" id="btn-generate"><i class="fa fa-eye" aria-hidden="true"></i> Schedule Processes</button>
+        </div>
+    </div>
+    
     <div class="row">
         <div class="col-xs-12">
             <table id="tableProc" class="table table-borderless text-center">
@@ -16,15 +31,6 @@
         </div>
     </div>
 
-    <div class="row controls">
-        <div class="col-xs-offset-3 col-xs-3">
-            <button class="btn btn-success btn-lg" id="btn-add"><span class="glyphicon glyphicon-plus"></span> Add Proccess</button>
-        </div>
-        <div class="col-xs-3">
-            <button class="btn btn-primary" id="btn-generate"><span class="glyphicon glyphicon-eye-open"></span> Schedule Processes</button>
-        </div>
-    </div>
-
     <div class="row">
         <div class="col-xs-12">
             <div id="target">
@@ -32,3 +38,117 @@
         </div>
     </div>
 </div>
+<script>
+var rows = 0;
+$(".btn-remove").on("click", function(e) {
+    e.preventDefault();
+    removeElem();
+});
+
+$("#btn-add").on("click", function() {
+    var elem = $("<tr class='animated fadeIn'><td><h4 class='proc-name'><strong>P" + ++rows +"</strong></h4><a href='#' class='btn-remove'>"+
+                    "<i class='fa fa-times' aria-hidden='true'></i></a></td>" +
+                    "<td><input type='text' class='form-control arrival-time' required></td>" +
+                    "<td><input type='text' class='form-control burst-time' required></td>" +
+                    "<td><input type='text' class='form-control priority' required></td>" +
+                    "</tr>");
+
+    var elem= $("#tableProc tbody").append(elem);
+
+    $(".btn-remove").on("click", removeElem);
+});
+
+$("#btn-generate").on("click", function(){
+    if (isRequesting == false) {
+        var emptyTbxes = checkForEmptyTbxes();
+
+        if (emptyTbxes == 0) {
+            isRequesting = true;
+            var data = "";
+            var buff = "";
+            $("#tableProc > tbody > tr").each(function(){
+                var tmp = $(this).children("td");
+                buff += "{";
+
+                buff += $(tmp).children(".proc-name").text() + "|";
+                buff += $(tmp).children(".arrival-time").val() + "|";
+                buff += $(tmp).children(".burst-time").val() + "|";
+                buff += $(tmp).children(".priority").val();
+
+                buff += "}";
+
+                data += buff;
+                buff = "";
+            });
+
+            $("#target").html("<div class=\"cssload-container\"><div class='cssload-lt'></div>" +
+                              "<div class='cssload-rt'></div>" +
+                              "<div class='cssload-lb'></div>" +
+                              "<div class='cssload-rb'></div></div>")
+
+            $.ajax({
+                url: "/ajax/process.java",
+                data: data,
+                type: "POST",
+                success: function(result){
+                    $("#target").html(result);
+                    isRequesting = false;
+                },
+                error: function(request, status, error) {
+                    console.log(error);
+                    $("#target").html("<div class='alert alert-warning'>" +
+                                      "<strong>Warning! </strong>" + error.toUpperCase() +
+                                    "</div>");
+                    isRequesting = false;
+                },
+                timeout: 3000
+            });
+        }
+
+    }
+});
+
+function checkForEmptyTbxes()
+{
+    var i = 0;
+    $("input.form-control").each(function() {
+        if ($(this).attr("type") == "text") {
+            var str = $(this).val();
+            str = str.replace(/[^\d.-]/g, '');
+            if (str.length == 0) {
+                i++;
+                addErrorBorder($(this));
+            } else {
+                var testMe = parseInt(str);
+                if ($(this).hasClass("burst-time") && testMe <= 0) {
+                    i++;
+                    addErrorBorder($(this));
+                } else if (testMe < 0) {
+                    i++;
+                    addErrorBorder($(this));
+                } else {
+                    $(this).removeClass("error-outline");
+                }
+            }
+        }
+
+    });
+    console.log(i);
+    return i;
+}
+
+function addErrorBorder(control)
+{
+    $(control).addClass("error-outline");
+    $(control).on("change", function(){
+         $(this).removeClass("error-outline");  
+    });
+}
+
+function removeElem() {
+    var par = $(this).parent().parent();
+    $(par).addClass("fadeOut").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+        $(this).remove();
+    });
+}
+</script>
