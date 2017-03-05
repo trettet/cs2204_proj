@@ -39,8 +39,8 @@
       <file leaf-file-name="PriorityPreemptiveScheduler.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/PriorityPreemptiveScheduler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="143">
-              <caret line="146" column="226" selection-start-line="146" selection-start-column="226" selection-end-line="146" selection-end-column="226" />
+            <state relative-caret-position="275">
+              <caret line="149" column="90" selection-start-line="149" selection-start-column="90" selection-end-line="149" selection-end-column="90" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#3394#3395#0" expanded="true" />
@@ -811,8 +811,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/PriorityPreemptiveScheduler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="143">
-          <caret line="146" column="226" selection-start-line="146" selection-start-column="226" selection-end-line="146" selection-end-column="226" />
+        <state relative-caret-position="275">
+          <caret line="149" column="90" selection-start-line="149" selection-start-column="90" selection-end-line="149" selection-end-column="90" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#3394#3395#0" expanded="true" />

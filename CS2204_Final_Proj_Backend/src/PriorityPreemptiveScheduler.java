@@ -138,7 +138,7 @@ public class PriorityPreemptiveScheduler
         // response here
 
         double delay = 0.8;
-        double curr = 0.8 * -1;
+        double curr = (0.8 * -1)+1.2;
         if (ganttMaster.getSize() > 0) {
             sbBuff.append("<h2>Gantt Chart</h2>");
             sbBuff.append("<div class='row'><div class='col-xs-12'><div id='gantt-chart-process'>");
@@ -147,7 +147,7 @@ public class PriorityPreemptiveScheduler
                 sbBuff.append("<span class='process' style='width:"+ ganttObj.getWidth()+"%'><span class='background' style='animation-delay:"+(curr=curr + delay) +"s'><h4 class='text-center' style='animation-delay:"+(curr+0.3)+"s'><strong>" + ganttObj.getPName() + "</strong></h4></span></span>");
             }
 
-            sbBuff.append("</span></div><div id='gantt-chart-nos'>");
+            sbBuff.append("</span></div><div id='gantt-chart-nos' class='animated fadeInUp' style='animation-delay: "+(curr+(delay*ganttMaster.getLast()))+"s'>");
 
             long[] ganttNums = ganttMaster.getNums();
             int ganttNumsLength = ganttNums.length - 2;

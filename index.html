@@ -166,7 +166,7 @@ $(function(){
         $(".btn-burger").toggleClass("active-burger");
     });
     
-    $("#lruDash").click(function(e){
+    $("#lruDash").on(function(e){
         e.preventDefault();
         fetchPage("lru.html");
     });
@@ -196,17 +196,15 @@ $(function(){
         fetchPage("adv_disadv_lru.html");
     });
     
-    $(".sidebar-nav li:not(sidebar-brand) a").on("click", function() {
-        $(".sidebar-nav li a").removeClass("active");
-        $(this).addClass("active");
-    })
+    $(".sidebar-nav li:not(sidebar-brand) a").click(function() {
+            $(".sidebar-nav li a").removeClass("active");
+            $(this).addClass("active");
+    });
 });
-    
 function fetchPage(urlString)
 {
     if (isRequesting == false) {
         isRequesting = true;
-        
         $('#loadhere').fadeOut(150, function(){
             $('#preloader_main').fadeIn(150, function() {
                 $('#loadhere').html("");
