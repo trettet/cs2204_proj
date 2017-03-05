@@ -204,32 +204,37 @@ $(function(){
     
 function fetchPage(urlString)
 {
-    $('#loadhere').fadeOut(150, function(){
-        $('#preloader_main').fadeIn(150, function() {
-            $.ajax({
-                url: urlString,
-                success: function(result) {
-                    $("#loadhere").html(result);
-                    setTimeout(function(){
-                        $("#preloader_main").fadeOut(function() {
-                            $("#loadhere").fadeIn();
-                        });
-                        isRequesting = false;
-                    },500);
-                },
-                error: function(request, status, error) {
-                    console.log(error);
-                    setTimeout(function(){
-                        $("#preloader_main").fadeOut(function() {
-                            $("#loadhere").fadeIn();
-                        });
-                        isRequesting = false;
-                    },500);
-                },
-                type: "POST"
+    if (isRequesting == false) {
+        isRequesting = true;
+        $('#loadhere').fadeOut(150, function(){
+            $('#preloader_main').fadeIn(150, function() {
+                $.ajax({
+                    url: urlString,
+                    success: function(result) {
+                        $("#loadhere").html(result);
+                        setTimeout(function(){
+                            $("#preloader_main").fadeOut(function() {
+                                $("#loadhere").fadeIn(function() {
+                                    isRequesting = false;
+                                });
+                            });
+                        },500);
+                    },
+                    error: function(request, status, error) {
+                        console.log(error);
+                        setTimeout(function(){
+                            $("#preloader_main").fadeOut(function() {
+                                $("#loadhere").fadeIn(function() {
+                                    isRequesting = false;
+                                });
+                            });
+                        },500);
+                    },
+                    type: "POST"
+                });
             });
         });
-    });
+    }
     
 }
 </script>

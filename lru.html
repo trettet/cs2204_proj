@@ -178,8 +178,11 @@
 
                            setTimeout(function(){
                                $('.preloader').fadeOut(function(){
-                                   $('#target').fadeIn();
-                                   isRequesting = false;
+                                   $('#target').fadeIn(
+                                       function() {
+                                           isRequesting = false;
+                                       }
+                                   );
                                });
                            }, 500);
 
@@ -190,8 +193,11 @@
                                               "<strong>Warning! </strong>" + error.toUpperCase() +
                                             "</div>");
                             setTimeout(function(){
-                                $('.preloader').fadeOut(function(){ $('#target').fadeIn() });
-                                isRequesting = false;
+                                $('.preloader').fadeOut(function(){ $('#target').fadeIn(
+                                    function() {
+                                        isRequesting = false;
+                                    }
+                                ); });
                             }, 500);
                         }
                     });

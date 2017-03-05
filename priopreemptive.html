@@ -232,8 +232,11 @@
                                 $(".target.wt-table").html(data.wtTable);
 
                                 setTimeout(function(){
-                                    $('#gantt-chart .preloader').fadeOut(function(){ $('.target.gantt-chart').fadeIn() });
-                                    isRequesting = false;
+                                    $('#gantt-chart .preloader').fadeOut(function(){ $('.target.gantt-chart').fadeIn(
+                                        function() {
+                                            isRequesting = false;
+                                        }
+                                    );});
                                 }, 500);
                             },
                             error: function(request, status, error) {
@@ -242,8 +245,11 @@
                                                   "<strong>Warning! </strong>" + error.toUpperCase() +
                                                 "</div>");
                                 setTimeout(function(){
-                                    $('#gantt-chart .preloader').fadeOut(function(){ $('.target.gantt-chart').fadeIn() });
-                                    isRequesting = false;
+                                    $('#gantt-chart .preloader').fadeOut(function(){ $('.target.gantt-chart').fadeIn(
+                                        function() {
+                                            isRequesting = false;
+                                        }
+                                    );});
                                 }, 500);
                             },
                             timeout: 3000
