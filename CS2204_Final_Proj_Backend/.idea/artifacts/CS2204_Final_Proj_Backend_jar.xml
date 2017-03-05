@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/CS2204_Final_Proj_Backend_jar</output-path>
     <root id="archive" name="CS2204_Final_Proj_Backend.jar">
       <element id="module-output" name="CS2204_Final_Proj_Backend" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/gson-2.8.0.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

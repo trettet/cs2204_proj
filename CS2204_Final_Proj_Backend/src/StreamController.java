@@ -29,6 +29,11 @@ public final class StreamController {
         }
     }
 
+    public PrintWriter getWriter()
+    {
+        return out;
+    }
+
     public PrintWriter getOut()
     {
         return out;

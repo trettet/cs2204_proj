@@ -18,13 +18,13 @@ public final class ProcessObject {
 
     public ProcessObject(String res)
     {
+        int i, y;
+        StringBuilder[] parsed = new StringBuilder[4];
         if (res != null) {
-            StringBuilder[] parsed = new StringBuilder[4];
             for (int z = 0; z < parsed.length; z++) {
                 parsed[z] = new StringBuilder();
-            }
+            } // init Stringbuilder
 
-            int i, y;
 
             for (y = 0, i = 1; i != res.length(); i++) {
                 if (res.charAt(i) != '|') {

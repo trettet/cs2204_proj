@@ -25,8 +25,9 @@
             background-repeat: no-repeat;
             background-attachment: fixed;
             overflow-x: hidden;
-            font-family: 'Lato', serif;
+            font-family: 'Lato', "Helvetica Neue", "Helvetica" ,"Arial",sans-serif;;
             background: #202020;
+            color: #f4f4f4;
         }
         
         @keyframes bg-anim {
@@ -35,13 +36,25 @@
             100%{background-position:0% 50%}
         }
 
-        
-        h1, h2, h3, h4, h5, h6, h7, h8, p, tr {
-            color: #f4f4f4;
-        }
-
         #target {
             margin-top: 10px;
+        }
+        
+        .submission-details {
+            margin-top: 30%;
+        }
+        
+        .submitted-by {
+            margin-top: 50px;
+        }
+        
+        .submitted-persons {
+            margin-left: 20px;
+        }
+        
+        .date-submitted {
+            margin-top: 6em;
+            text-align: center;
         }
     </style>
 </head>
@@ -77,7 +90,7 @@
                     <a href="#" id="prioDash">Dashboard</a>
                 </li>
                 <li>
-                    <a href="#">About the Algorithm</a>
+                    <a href="#" id='aboutPrio'>About the Algorithm</a>
                 </li>
                 <li>
                     <a href="#">Advantages and Disadvantages</a>
@@ -102,6 +115,30 @@
     
         <div class="container">
             <div id='loadhere'>
+                <h1>CS2204 Operating Systems Project</h1>
+                <h3>A Simulation of Priority Preemptive Scheduling &amp; Least Recently Used Cache Algorithm</h2>
+                
+                <div class="submission-details">
+                    <div class="submitted-by">
+                        <h4>Submitted by</h4>
+                        <div class="submitted-persons">
+                            <h4>Ethan Ray Mosqueda</h4>
+                            <h4>Vince Jerald A. Villamora</h4>
+                        </div>
+                    </div>
+
+                    <div class="submitted-by">
+                        <h4>Submitted To</h4>
+                        <div class="submitted-persons">
+                            <h4>Angie M. Ceniza MSIT</h4>
+                        </div>
+                    </div>
+
+                    <div class="date-submitted">
+                        <h4>March 2017</h4>
+                    </div>
+                </div>
+                
                 
             </div>
             <div id='preloader_main' style="display:none;" class='cssload-thecube'>
@@ -130,13 +167,23 @@ $(function(){
     
     $("#lruDash").click(function(e){
         e.preventDefault();
-        fetchPage("lru.php");
+        fetchPage("lru.html");
     });
     
     $("#prioDash").click(function(e){
         e.preventDefault();
         fetchPage("priopreemptive.html");
     });
+    
+    $("#aboutPrio").click(function(e){
+        e.preventDefault();
+        fetchPage("aboutprio.html");
+    });
+    
+    $(".sidebar-nav li:not(sidebar-brand) a").on("click", function() {
+        $(".sidebar-nav li a").removeClass("active");
+        $(this).addClass("active");
+    })
 });
     
 function fetchPage(urlString)

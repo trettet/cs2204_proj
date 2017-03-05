@@ -57,6 +57,12 @@ public class GanttChartController
         return ganttChart;
     }
 
+    public double getWidthByIndex(int ndx)
+    {
+        return ganttChart.get(ndx).getWidth();
+
+    }
+
     public long[] getNums() {
         long[] ret = new long[ganttChart.size()+1];
         int i;

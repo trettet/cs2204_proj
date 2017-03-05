@@ -1,0 +1,126 @@
+<link rel="stylesheet" type="text/css" href="css/ajaxloader.css">
+<style>
+    .no-of-page-faults {
+        margin-left: 10px;
+    }
+    .tooltip.left .tooltip-inner {
+        background-color: rgba(255, 255, 255,0.95);
+        color: #101010;
+        box-shadow: 1px 1px 4px black;
+    }
+    .tooltip.left .tooltip-arrow {
+        border-left-color: rgba(255, 255, 255,0.95);
+    }    
+    td:not(.label-table) {
+        text-align: center;
+    }
+    
+    .table>tbody>tr.danger>td, .table>tbody>tr.danger>th, .table>tbody>tr>td.danger, .table>tbody>tr>th.danger, .table>tfoot>tr.danger>td, .table>tfoot>tr.danger>th, .table>tfoot>tr>td.danger, .table>tfoot>tr>th.danger, .table>thead>tr.danger>td, .table>thead>tr.danger>th, .table>thead>tr>td.danger, .table>thead>tr>th.danger {
+        background-color: #802000;
+    }
+    
+    .table>tbody>tr.info>td, .table>tbody>tr.info>th, .table>tbody>tr>td.info, .table>tbody>tr>th.info, .table>tfoot>tr.info>td, .table>tfoot>tr.info>th, .table>tfoot>tr>td.info, .table>tfoot>tr>th.info, .table>thead>tr.info>td, .table>thead>tr.info>th, .table>thead>tr>td.info, .table>thead>tr>th.info {
+        background-color: #346F8B;
+    }
+    
+    .table>tbody>tr.warning>td, .table>tbody>tr.warning>th, .table>tbody>tr>td.warning, .table>tbody>tr>th.warning, .table>tfoot>tr.warning>td, .table>tfoot>tr.warning>th, .table>tfoot>tr>td.warning, .table>tfoot>tr>th.warning, .table>thead>tr.warning>td, .table>thead>tr.warning>th, .table>thead>tr>td.warning, .table>thead>tr>th.warning {
+        background-color: #988E59;
+    }
+    
+    .table>tbody>tr.success>td, .table>tbody>tr.success>th, .table>tbody>tr>td.success, .table>tbody>tr>th.success, .table>tfoot>tr.success>td, .table>tfoot>tr.success>th, .table>tfoot>tr>td.success, .table>tfoot>tr>th.success, .table>thead>tr.success>td, .table>thead>tr.success>th, .table>thead>tr>td.success, .table>thead>tr>th.success {
+        background-color: #038464;
+    }
+</style>
+<form id='mainform' method="POST" action="lruProcess.php">
+    <div class="form-group">
+        <label for="page-ref-string">Page Reference String</label>
+        <div class="input-group red-tooltip" rel="page-ref-string-label" title="Separate Pages by Spaces" data-toggle="tooltip" data-placement="left">
+          <span class="input-group-addon" id="page-ref-string-label"><i class="fa fa-book" aria-hidden="true"></i></span>
+          <input type="text" autocomplete="off" class="form-control" name="page-ref-string" placeholder="1 2 3 4 5 6" aria-describedby="page-ref-string-label" required>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="frame-size">Frame Size</label>
+        <div class="input-group">
+          <span class="input-group-addon" id="frame-size-label"><i class="fa fa-cogs" aria-hidden="true"></i></span>
+          <input type="text" autocomplete="off" class="form-control" name="frame-size" id="frame-size" placeholder="10" aria-describedby="frame-size-label" required>
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-default">Generate</button>
+</form>
+<div>
+    <div id='target'>
+    </div>
+    <div style='display:none' class="cssload-container preloader">
+        <div class='cssload-lt'></div>
+        <div class='cssload-rt'></div>
+        <div class='cssload-lb'></div>
+        <div class='cssload-rb'></div>
+    </div>
+</div>
+
+<script>
+    $('[data-toggle="tooltip"]').tooltip(); 
+    $("#mainform").submit(function(e) {
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
+        var url = "lruProcess.php"; // the script where you handle the form input.
+        $('#target').fadeOut(function(){
+            $('.preloader').fadeIn(function(){
+                $.ajax({
+                   type: "POST",
+                   url: url,
+                   data: $("#mainform").serialize(), // serializes the form's elements.
+                   success: function(z) {
+                       console.log(z);
+                       var data = $.parseJSON(z);
+                       var res = data.frameResults;
+                       $("#target").html("");
+                       $("#target").append("<table class='table table-bordered'><tbody><tr class='info'></tr></tbody></table>");
+
+                       var tmp;
+
+                       // PRINT HEADERS
+                       $("#target > table > tbody > tr").append("<td class='label-table'>Page Requested</td>");
+                       for(var i=0; i<res.length; i++) {
+                           $("#target > table > tbody > tr").append("<td><strong>"+res[i].pageRequested+"</strong></td>");
+                       }
+
+                       // -----------
+
+                       for(var i=0; i<data.frameSize; i++) {
+                            tmp = "<tr><td>&nbsp</td>";
+                            // <td>res[0][0] , res[1][0], res[2][0];
+                            for(var j =0; j<res.length; j++) {
+                               tmp += "<td>"+(res[j].frameView[i] != -1? res[j].frameView[i] : "–")+"</td>";
+                            }
+                            tmp+= "</tr>";
+                            $("#target > table > tbody").append(tmp);
+                       }
+                       // PRINT PAGE REPLACED
+                       tmp = "<tr class='warning'><td class='label-table'>Page Replaced</td>";
+                       for(var i=0; i<res.length; i++) {
+                            tmp += "<td>"+(res[i].pageReplaced > -2 ? res[i].pageReplaced : "&nbsp")+"</td>";
+                       }
+                       tmp+= "</tr><tr class='danger'><td class='label-table'>Page Fault</td>";
+                       for(var i=0; i<res.length; i++) {
+                            tmp += "<td>"+(res[i].pageReplaced != -3 ? "<i class='fa fa-check' aria-hidden='true'></i>" : "&nbsp") + "</td>";    
+                       }
+                       tmp+= "</tr><tr class='success'><td class='label-table' colspan='"+(data.frameSize + 1)+"'><strong>Total No. of Page Faults:</strong><span class='no-of-page-faults'>"+data.pageFaults+"</span></tr>";
+
+                       $("#target > table > tbody").append(tmp);
+                       
+                       setTimeout(function(){
+                           $('.preloader').fadeOut(function(){
+                               $('#target').fadeIn();
+                           });
+                       }, 500);
+
+                   }
+                });
+            });
+        });
+    });
+</script>

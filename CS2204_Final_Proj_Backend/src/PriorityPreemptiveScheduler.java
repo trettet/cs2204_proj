@@ -1,5 +1,7 @@
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
+import com.google.gson.Gson;
 
 /**
  * Created by theLa on Feb-27-2017.
@@ -92,6 +94,27 @@ public class PriorityPreemptiveScheduler
         return i;
     }
 
+    private class ResultObject implements Serializable
+    {
+        private String ganttChart;
+        private String taTable;
+        private String wtTable;
+        private String extraHTML;
+
+        public ResultObject()
+        {
+            ganttChart = taTable = wtTable = extraHTML = "";
+        }
+        public void setGanttChart(String in) { ganttChart = in; }
+        public String getGanttChart() {return ganttChart;}
+        public void setTaTable(String in) { taTable = in; }
+        public String getTaTable() { return  taTable; }
+        public void setWtTable(String in) {wtTable = in;}
+        public String getWtTable() { return  wtTable; }
+        public void setExtraHTML(String in) { extraHTML = in;}
+        public String getExtraHTML() {return extraHTML;}
+    }
+
     private void echoResults()
     {
         int i;
@@ -101,6 +124,9 @@ public class PriorityPreemptiveScheduler
         ArrayList<GanttChartObj> tmpList;
         ListIterator<GanttChartObj> travTmp;
         GanttChartObj buff, buffPrev;
+        Gson GSBuilder = new Gson();
+        StringBuilder sbBuff = new StringBuilder(300);
+        ResultObject resObj = new ResultObject();
 
         double avgWT, avgTA;
         avgWT = avgTA = 0.0;
@@ -110,28 +136,33 @@ public class PriorityPreemptiveScheduler
         st.write("\r\n");
 
         // response here
-        BigDecimal delay =BigDecimal.valueOf(0.80);
-        BigDecimal curr = delay.negate();
+
+        double delay = 0.8;
+        double curr = 0.8 * -1;
         if (ganttMaster.getSize() > 0) {
-            st.write("<h2 class='wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'>Gantt Chart</h2>");
-            st.write("<div class='row'><div class='col-xs-12'><div id='gantt-chart-process'>");
+            sbBuff.append("<h2>Gantt Chart</h2>");
+            sbBuff.append("<div class='row'><div class='col-xs-12'><div id='gantt-chart-process'>");
 
             for (GanttChartObj ganttObj : ganttMaster.getList()) {
-                st.write("<span class='process' style='width:"+ ganttObj.getWidth()+"%'><span class='background' style='animation-delay:"+(curr=curr.add(delay)) +"s'><h4 class='text-center' style='animation-delay:"+curr.add(BigDecimal.valueOf(0.3))+"s'><strong>" + ganttObj.getPName() + "</strong></h4></span></span>");
+                sbBuff.append("<span class='process' style='width:"+ ganttObj.getWidth()+"%'><span class='background' style='animation-delay:"+(curr=curr + delay) +"s'><h4 class='text-center' style='animation-delay:"+(curr+0.3)+"s'><strong>" + ganttObj.getPName() + "</strong></h4></span></span>");
             }
 
-            st.write("</span></div><div id='gantt-chart-nos'>'");
+            sbBuff.append("</span></div><div id='gantt-chart-nos'>");
 
             long[] ganttNums = ganttMaster.getNums();
-
-            for (i = 0; i < ganttNums.length - 2; i++) {
-                st.write("<span class='danger'>" + ganttNums[i] + "</span>");
+            int ganttNumsLength = ganttNums.length - 2;
+            for (i = 0; i < ganttNumsLength; i++) {
+                sbBuff.append("<span class='gantt-no' style='width:"+ganttMaster.getWidthByIndex(i)+"%'>" + ganttNums[i] + "</span>");
             }
-            long lastTime = ganttNums[i+1];
-            st.write("<span class='danger'>" + ganttNums[i] + "<div class='pull-right' style='width:'>" + lastTime + "</div></span>");
 
-            st.write("</div></div></div>");
+            sbBuff.append("<span class='gantt-no' style='width:"+ganttMaster.getWidthByIndex(i)+"%'>" + ganttNums[i] + "<div style='float:right'>"+ganttNums[i+1]+"</div></span>");
 
+            sbBuff.append("</div></div></div>");
+
+            resObj.setGanttChart(sbBuff.toString());
+            sbBuff.setLength(0);
+
+            // POPULATE TA TABLE and WT TABLE
             for (ProcessObject trav : orgPList) {
                 newElem = new TableObject(trav.getPName());
 
@@ -153,53 +184,60 @@ public class PriorityPreemptiveScheduler
                 wtList.add(newElem);
                 taList.add(new TableObject(trav.getPName(), ganttMaster.getLastOccurrence(trav.getPName()).getEnd(), trav.getArrival()));
             }
+            /* -------------------------- */
             // ------- TA TABLE -----------
-            delay = BigDecimal.valueOf(0.45);
-            st.write("<div class='row'><div class='col-md-6'><h3  class='wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'>Turnaround Time</h3>");
-            st.write("<table class='table table-borderless'>" +
-                    "<th  class='col-md-2 wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'>Process</th>" +
-                    "<th class='wow flipInX' data-wow-delay='"+curr+"s'>Equation</th>" +
-                    "<th class='wow flipInX' data-wow-delay='"+curr+"s'>Result</th>");
+            sbBuff.append("<div class='row'><div class='col-xs-12'><h3>Turnaround Time</h3>");
+            sbBuff.append("<table class='table table-borderless'><thead>" +
+                    "<th class='col-md-2'>Process</th>" +
+                    "<th>Equation</th>" +
+                    "<th>Result</th></thead>");
 
             for (TableObject trav : taList) {
-                st.write("<tr class='wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'><td>" + trav.getPName() + "</td>  <td>" + trav.getFirstEqStr(" ") + "</td>  <td>" + trav.getFirstResult() + " ms</td> </tr>");
+                sbBuff.append("<tr><td>" + trav.getPName() + "</td>  <td>" + trav.getFirstEqStr(" ") + "</td>  <td>" + trav.getFirstResult() + " ms</td> </tr>");
                 avgTA += trav.getFirstResult();
             }
             avgTA /= orgPList.size();
 
-            st.write("<tr class='wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'><td colspan='3'><h4>Average Turnaround Time: " + String.format("%.2f ms", avgTA) + "</h3></td></tr>");
-            st.write("</table></div>");
+            sbBuff.append("<tr><td colspan='3'><h4>Average Turnaround Time: " + String.format("%.2f ms", avgTA) + "</h3></td></tr>");
+            sbBuff.append("</table></div>");
 
-            // ------- TA TABLE -----------
-            st.write("<div class='col-md-6'><h3 class='wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'>Waiting Time</h3>");
-            st.write("<table class='table table-borderless'>" +
-                    "<th class='col-md-2 wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'>Process</th>" +
-                    "<th class='wow flipInX' data-wow-delay='"+curr+"s'>Equation(s)</th>" +
-                    "<th class='wow flipInX' data-wow-delay='"+curr+"s'>Result</th>");
+            resObj.setTaTable(sbBuff.toString());
+            sbBuff.setLength(0);
+            // ------- END OF TA TABLE ----------- \\
+
+            sbBuff.append("<div class='col-xs-12'><h3>Waiting Time</h3>");
+            sbBuff.append("<table class='table table-borderless'><thead>" +
+                    "<th class='col-md-2'>Process</th>" +
+                    "<th>Equation(s)</th>" +
+                    "<th>Result</th></thead>");
 
             for (TableObject trav : wtList) {
-                st.write("<tr class='wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'><td>" + trav.getPName() + "</td><td>");
+                sbBuff.append("<tr><td>" + trav.getPName() + "</td><td>");
                 i = 0;
                 int len = trav.getEqCount();
                 if (len != 1) {
                     for (String eqTrav : trav.getAllEqStr(" ")) {
-                        st.write("(" + eqTrav + ")" + (++i < trav.getEqCount() ? " + " : ""));
+                        sbBuff.append("(" + eqTrav + ")" + (++i < trav.getEqCount() ? " + " : ""));
                     }
                 } else {
-                    st.write(trav.getFirstEqStr(" "));
+                    sbBuff.append(trav.getFirstEqStr(" "));
                 }
-                st.write("</td><td>" + trav.getResults() + " ms</td> </tr>");
+                sbBuff.append("</td><td>" + trav.getResults() + " ms</td> </tr>");
                 avgWT += (double) trav.getResults();
             }
             avgWT /= orgPList.size();
 
-            st.write("<tr class='wow flipInX' data-wow-delay='"+(curr=curr.add(delay))+"s'><td colspan='3'><h4>Average Waiting Time: " + String.format("%.2f ms", avgWT) + "</h4></td></tr>");
-            st.write("</table></div></div>");
-            st.write("<script>console.log('Priority Preemptive Scheduling done . . .')</script>");
+            sbBuff.append("<tr><td colspan='3'><h4>Average Waiting Time: " + String.format("%.2f ms", avgWT) + "</h4></td></tr>");
+            sbBuff.append("</table></div></div>");
+
+            resObj.setWtTable(sbBuff.toString());
+            resObj.setExtraHTML("<script>console.log('Priority Preemptive Scheduling done . . .')</script>");
         } else {
-            st.write("<script>console.log('Warning: Empty GANTT Chart!')</script>");
+            resObj.setExtraHTML("<script>console.log('Warning: Empty GANTT Chart!')</script>");
         }
 
+        GSBuilder.toJson(resObj, st.getWriter());
+        System.out.println("Sent JSON . . .");
         st.close();
     }
 

@@ -5,6 +5,9 @@
 <link rel="stylesheet" type="text/css" href="css/custom-pills.css">
 <link rel="stylesheet" type="text/css" href="css/gantt-chart.css">
 <style>
+    span.gantt-no {
+        display: inline-block;
+    }
     .tab-content {
         padding-top: 10px;
     }
@@ -19,7 +22,7 @@
     }
     
     .proc-col > .controls {
-        animation: fadeShitOut 0.3s forwards;
+        animation: fadeControlOut 0.3s forwards;
         margin-left: -20px;
         visibility: hidden;
     }
@@ -32,10 +35,10 @@
     }
     
     .proc-col:hover .controls {
-        animation: fadeShitIn 0.3s forwards;
+        animation: fadeControlIn 0.3s forwards;
     }
     
-    @keyframes fadeShitIn {
+    @keyframes fadeControlIn {
         from {visibility: hidden;
             opacity:  0;
             margin-left: -20px; }
@@ -43,7 +46,7 @@
         margin-left: 5px; }
     }
     
-    @keyframes fadeShitOut {
+    @keyframes fadeControlOut {
         from {visibility: visible;opacity: 1;
         margin-left: 5px; }
         to {visibility: hidden;
@@ -81,7 +84,7 @@
         </ul>
 
         <div class="tab-content">
-            <div id="process-table" class="tab-pane fade in active">
+            <div id="process-table" class="tab-pane animated zoomIn active">
                 <div class="row row-no-padding">
                     <div class="col-xs-offset-3 col-xs-3">
                         <button class="btn btn-outlined btn-success pull-right" id="btn-add"><i class="fa fa-plus" aria-hidden="true"></i> Add Process</button>
@@ -114,28 +117,40 @@
                     </table>
                 </div>
             </div>
-          <div id="gantt-chart" class="tab-pane fade">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div id='preloader' style='display:none' class="cssload-container">
-                        <div class='cssload-lt'></div>
-                        <div class='cssload-rt'></div>
-                        <div class='cssload-lb'></div>
-                        <div class='cssload-rb'></div>
-                    </div>
-                    <div id="target">
+            <div id="gantt-chart" class="tab-pane animated zoomIn">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div style='display:none' class="cssload-container preloader">
+                            <div class='cssload-lt'></div>
+                            <div class='cssload-rt'></div>
+                            <div class='cssload-lb'></div>
+                            <div class='cssload-rb'></div>
+                        </div>
+                        <div class="target gantt-chart">
+                        </div>
                     </div>
                 </div>
             </div>
-          </div>
-          <div id="turnaround-time" class="tab-pane fade">
-            <h3>Menu 2</h3>
-            <p>Some content in menu 2.</p>
-          </div>
-            <div id="waiting-time" class="tab-pane fade">
-            <h3>Menu 2</h3>
-            <p>Some content in menu 3.</p>
-          </div>
+            <div id="turnaround-time" class="tab-pane animated zoomIn">
+                <div style='display:none' class="cssload-container preloader">
+                    <div class='cssload-lt'></div>
+                    <div class='cssload-rt'></div>
+                    <div class='cssload-lb'></div>
+                    <div class='cssload-rb'></div>
+                </div>
+                <div class="target ta-table">
+                </div>
+            </div>
+            <div id="waiting-time" class="tab-pane animated zoomIn">
+                <div style='display:none' class="cssload-container preloader">
+                    <div class='cssload-lt'></div>
+                    <div class='cssload-rt'></div>
+                    <div class='cssload-lb'></div>
+                    <div class='cssload-rb'></div>
+                </div>
+                <div class="target wt-table">
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -194,30 +209,34 @@ $("#btn-add-cust").on("click", function() {
 $("#btn-generate").on("click", function(){
     if (isRequesting == false) {
         var emptyTbxes = checkForEmptyTbxes();
-
         if (emptyTbxes == 0) {
             var data = "";
             var buff = "";
             isRequesting = true;
+            $(".target").html("");
             activeTab("gantt-chart");
             
-            $('#target').fadeOut(function(){
-                $('#preloader').fadeIn(function() {
+            $('.target.gantt-chart').fadeOut(function(){
+                $('#gantt-chart .preloader').fadeIn(function() {
                     $.ajax({
                         url: "/ajax/process.java",
                         data: data,
                         type: "POST",
-                        success: function(result){
-                            $("#target").html(result);
+                        success: function(e){
+                            var data = $.parseJSON(e);
+                            $(".target.gantt-chart").html(data.ganttChart);
+                            $(".target.gantt-chart").append(data.extraHTML);
+                            $(".target.ta-table").html(data.taTable);
+                            $(".target.wt-table").html(data.wtTable);
 
                             setTimeout(function(){
-                                $('#preloader').fadeOut(function(){ $('#target').fadeIn() });
+                                $('#gantt-chart .preloader').fadeOut(function(){ $('.target.gantt-chart').fadeIn() });
                                 isRequesting = false;
                             }, 500);
                         },
                         error: function(request, status, error) {
                             console.log(error);
-                            $("#target").html("<div class='alert alert-warning'>" +
+                            $(".target").html("<div class='alert alert-warning'>" +
                                               "<strong>Warning! </strong>" + error.toUpperCase() +
                                             "</div>");
                             isRequesting = false;

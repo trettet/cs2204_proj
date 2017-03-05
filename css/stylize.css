@@ -43,6 +43,15 @@
 }
 
 .table>caption+thead>tr:first-child>td, .table>caption+thead>tr:first-child>th, .table>colgroup+thead>tr:first-child>td, .table>colgroup+thead>tr:first-child>th, .table>thead:first-child>tr:first-child>td, .table>thead:first-child>tr:first-child>th {
+    font-size: 16px;
+}
+
+#tableProc.table>caption+thead>tr:first-child>td,
+#tableProc.table>caption+thead>tr:first-child>th,
+#tableProc.table>colgroup+thead>tr:first-child>td,
+#tableProc.table>colgroup+thead>tr:first-child>th,
+#tableProc.table>thead:first-child>tr:first-child>td,
+#tableProc.table>thead:first-child>tr:first-child>th {
     text-align: center;
 }
 
