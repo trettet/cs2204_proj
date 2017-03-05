@@ -118,7 +118,17 @@
                            });
                        }, 500);
 
-                   }
+                    },
+                    error: function(request, status, error) {
+                        console.log(error);
+                        $("#target").html("<div class='alert alert-warning'>" +
+                                          "<strong>Warning! </strong>" + error.toUpperCase() +
+                                        "</div>");
+                        setTimeout(function(){
+                            $('.preloader').fadeOut(function(){ $('#target').fadeIn() });
+                            isRequesting = false;
+                        }, 500);
+                    }
                 });
             });
         });

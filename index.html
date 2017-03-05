@@ -199,13 +199,16 @@ function fetchPage(urlString)
                             $("#loadhere").fadeIn();
                         });
                         isRequesting = false;
-                    },1000);
+                    },500);
                 },
                 error: function(request, status, error) {
                     console.log(error);
-                    $("#target").html("<div class='alert alert-danger'>" +
-                                      "<strong>Error: Unable to load page! </strong>" + error.toUpperCase() +
-                                    "</div>");
+                    setTimeout(function(){
+                        $("#preloader_main").fadeOut(function() {
+                            $("#loadhere").fadeIn();
+                        });
+                        isRequesting = false;
+                    },500);
                 },
                 type: "POST"
             });

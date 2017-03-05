@@ -239,7 +239,10 @@ $("#btn-generate").on("click", function(){
                             $(".target").html("<div class='alert alert-warning'>" +
                                               "<strong>Warning! </strong>" + error.toUpperCase() +
                                             "</div>");
-                            isRequesting = false;
+                            setTimeout(function(){
+                                $('#gantt-chart .preloader').fadeOut(function(){ $('.target.gantt-chart').fadeIn() });
+                                isRequesting = false;
+                            }, 500);
                         },
                         timeout: 3000
                     });
