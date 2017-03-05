@@ -233,7 +233,8 @@ function fetchPage(urlString)
                             });
                         },500);
                     },
-                    type: "POST"
+                    timeout: 10000,
+                    type: "GET"
                 });
             });
         });
