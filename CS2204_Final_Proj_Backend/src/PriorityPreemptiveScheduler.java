@@ -147,7 +147,7 @@ public class PriorityPreemptiveScheduler
                 sbBuff.append("<span class='process' style='width:"+ ganttObj.getWidth()+"%'><span class='background' style='animation-delay:"+(curr=curr + delay) +"s'><h4 class='text-center' style='animation-delay:"+(curr+0.3)+"s'><strong>" + ganttObj.getPName() + "</strong></h4></span></span>");
             }
 
-            sbBuff.append("</span></div><div id='gantt-chart-nos' class='animated fadeInUp' style='animation-delay: "+(curr+(delay*ganttMaster.getLast()))+"s'>");
+            sbBuff.append("</span></div><div id='gantt-chart-nos' class='animated fadeInUp' style='animation-delay: "+(curr+((delay-0.6)*ganttMaster.getLast()))+"s'>");
 
             long[] ganttNums = ganttMaster.getNums();
             int ganttNumsLength = ganttNums.length - 2;
