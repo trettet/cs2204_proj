@@ -94,7 +94,7 @@
                     <a href="#" id='aboutPrio'>About the Algorithm</a>
                 </li>
                 <li>
-                    <a href="#">Advantages and Disadvantages</a>
+                    <a href="#" id="advAndDisadvPrio">Advantages and Disadvantages</a>
                 </li>
                 <li class="sidebar-brand">
                     <a href="#">
@@ -105,10 +105,10 @@
                     <a href="#" id="lruDash">Dashboard</a>
                 </li>
                 <li>
-                    <a href="#">About the Algorithm</a>
+                    <a href="#" id="aboutLru">About the Algorithm</a>
                 </li>
                 <li>
-                    <a href="#">Advantages and Disadvantages</a>
+                    <a href="#" id="advAndDisadvLru">Advantages and Disadvantages</a>
                 </li>
             </ul>
         </div>
@@ -179,6 +179,21 @@ $(function(){
     $("#aboutPrio").click(function(e){
         e.preventDefault();
         fetchPage("aboutprio.html");
+    });
+    
+    $("#aboutLru").click(function(e){
+        e.preventDefault();
+        fetchPage("aboutlru.html");
+    });
+    
+    $("#advAndDisadvPrio").click(function(e){
+        e.preventDefault();
+        fetchPage("adv_disadv_prio.html");
+    });
+    
+    $("#advAndDisadvLru").click(function(e){
+        e.preventDefault();
+        fetchPage("adv_disadv_lru.html");
     });
     
     $(".sidebar-nav li:not(sidebar-brand) a").on("click", function() {
