@@ -120,7 +120,7 @@
                         addErrorBorder($(this), errorClass);
                     } else {
                         if ($(this).attr("id") != "frame-size") {
-                            $(this).val(str.replace(/\s*$/,"").replace(/\s\s/g, ' '));
+                            $(this).val(str.replace(/^\s\s*/, '').replace(/\s\s*$/, '').replace(/\s\s+/g, ' '));
                         } else {
                             $(this).val(str.replace(/[^\d]/g, ''));
                         }
@@ -156,14 +156,14 @@
                            var data = $.parseJSON(z);
                            var res = data.frameResults;
                            $("#target").html("");
-                           $("#target").append("<table class='table table-bordered'><tbody><tr class='info'></tr></tbody></table>");
+                           $("#target").append("<div class='table-responsive'><table class='table table-bordered'><tbody><tr class='info'></tr></tbody></table></div>");
 
                            var tmp;
 
                            // PRINT HEADERS
-                           $("#target > table > tbody > tr").append("<td class='label-table'>Page Requested</td>");
+                           $("#target table > tbody > tr").append("<td class='label-table'>Page Requested</td>");
                            for(var i=0; i<res.length; i++) {
-                               $("#target > table > tbody > tr").append("<td><strong>"+res[i].pageRequested+"</strong></td>");
+                               $("#target table > tbody > tr").append("<td><strong>"+res[i].pageRequested+"</strong></td>");
                            }
 
                            // -----------
@@ -175,7 +175,7 @@
                                    tmp += "<td>"+(res[j].frameView[i] != -1? res[j].frameView[i] : "–")+"</td>";
                                 }
                                 tmp+= "</tr>";
-                                $("#target > table > tbody").append(tmp);
+                                $("#target table > tbody").append(tmp);
                            }
                            // PRINT PAGE REPLACED
                            tmp = "<tr class='warning'><td class='label-table'>Page Replaced</td>";
@@ -186,9 +186,9 @@
                            for(var i=0; i<res.length; i++) {
                                 tmp += "<td>"+(res[i].pageReplaced != -3 ? "<i class='fa fa-check' aria-hidden='true'></i>" : "&nbsp") + "</td>";    
                            }
-                           tmp+= "</tr><tr class='success'><td class='label-table' colspan='"+(data.frameSize + 1)+"'><strong>Total No. of Page Faults:</strong><span class='no-of-page-faults'>"+data.pageFaults+"</span></tr>";
+                           tmp+= "</tr><tr class='success'><td class='label-table' colspan='"+(res.length + 1)+"'><strong>Total No. of Page Faults:</strong><span class='no-of-page-faults'>"+data.pageFaults+"</span></tr>";
 
-                           $("#target > table > tbody").append(tmp);
+                           $("#target table > tbody").append(tmp);
 
                            setTimeout(function(){
                                $('.preloader').fadeOut(function(){
