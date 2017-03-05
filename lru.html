@@ -1,4 +1,5 @@
 <link rel="stylesheet" type="text/css" href="css/ajaxloader.css">
+<link rel="stylesheet" type="text/css" href="css/btn-outlined.css">
 <style>
     .no-of-page-faults {
         margin-left: 10px;
@@ -30,6 +31,21 @@
     .table>tbody>tr.success>td, .table>tbody>tr.success>th, .table>tbody>tr>td.success, .table>tbody>tr>th.success, .table>tfoot>tr.success>td, .table>tfoot>tr.success>th, .table>tfoot>tr>td.success, .table>tfoot>tr>th.success, .table>thead>tr.success>td, .table>thead>tr.success>th, .table>thead>tr>td.success, .table>thead>tr>th.success {
         background-color: #038464;
     }
+    
+    input {
+        transition: 0.3s all linear;
+    }
+    
+    .error-outline {
+        border-color: #a94442;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    }
+    .error-outline:focus {
+        border-color: #843534;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
+    }
 </style>
 <form id='mainform' method="POST" action="lruProcess.php">
     <div class="form-group">
@@ -48,7 +64,7 @@
         </div>
     </div>
     
-    <button type="submit" class="btn btn-default">Generate</button>
+    <button type="submit" class="btn btn-outlined btn-success">Generate</button>
 </form>
 <div>
     <div id='target'>
@@ -62,75 +78,125 @@
 </div>
 
 <script>
+    function addErrorBorder(control, errorClass)
+    {
+        $(control).addClass(errorClass);
+        $(control).on("change", function(){
+            var str = $(this).val();
+            str = str.replace(/[^\d\s]/g, '');
+            if (str.length > 0) {
+                $(this).removeClass(errorClass);  
+            }
+        });
+    }
+    
+    function checkForEmptyTbxes(selector, errorClass)
+    {
+        var i = 0;
+        $(selector).each(function() {
+            if ($(this).attr("type") == "text") {
+                var str = $(this).val();
+                str = str.replace(/[^\d\s]/g, '');
+                if (str.length == 0) {
+                    i++;
+                    addErrorBorder($(this), errorClass);
+                } else {
+                    var testMe = parseInt(str);
+                    if (testMe < 0) {
+                        i++;
+                        addErrorBorder($(this), errorClass);
+                    } else {
+                        if ($(this).attr("id") != "frame-size") {
+                            $(this).val(str.replace(/\s*$/,"").replace(/\s\s/g, ' '));
+                        } else {
+                            $(this).val(str.replace(/[^\d]/g, ''));
+                        }
+                        $(this).removeClass(errorClass);
+                    }
+                }
+            }
+
+        });
+        console.log(i);
+        return i;
+    }
+    
     $('[data-toggle="tooltip"]').tooltip(); 
     $("#mainform").submit(function(e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
+        if (checkForEmptyTbxes("#mainform input", "error-outline") > 0) {
+            return;
+        }
+        
+        if (isRequesting == false) {            
+            isRequesting = true;
+            var url = "lruProcess.php"; // the script where you handle the form input.
+            $('#target').fadeOut(function(){
+                $('.preloader').fadeIn(function(){
+                    $.ajax({
+                       type: "POST",
+                       url: url,
+                       data: $("#mainform").serialize(), // serializes the form's elements.
+                       success: function(z) {
+                           console.log(z);
+                           var data = $.parseJSON(z);
+                           var res = data.frameResults;
+                           $("#target").html("");
+                           $("#target").append("<table class='table table-bordered'><tbody><tr class='info'></tr></tbody></table>");
 
-        var url = "lruProcess.php"; // the script where you handle the form input.
-        $('#target').fadeOut(function(){
-            $('.preloader').fadeIn(function(){
-                $.ajax({
-                   type: "POST",
-                   url: url,
-                   data: $("#mainform").serialize(), // serializes the form's elements.
-                   success: function(z) {
-                       console.log(z);
-                       var data = $.parseJSON(z);
-                       var res = data.frameResults;
-                       $("#target").html("");
-                       $("#target").append("<table class='table table-bordered'><tbody><tr class='info'></tr></tbody></table>");
+                           var tmp;
 
-                       var tmp;
+                           // PRINT HEADERS
+                           $("#target > table > tbody > tr").append("<td class='label-table'>Page Requested</td>");
+                           for(var i=0; i<res.length; i++) {
+                               $("#target > table > tbody > tr").append("<td><strong>"+res[i].pageRequested+"</strong></td>");
+                           }
 
-                       // PRINT HEADERS
-                       $("#target > table > tbody > tr").append("<td class='label-table'>Page Requested</td>");
-                       for(var i=0; i<res.length; i++) {
-                           $("#target > table > tbody > tr").append("<td><strong>"+res[i].pageRequested+"</strong></td>");
-                       }
+                           // -----------
 
-                       // -----------
+                           for(var i=0; i<data.frameSize; i++) {
+                                tmp = "<tr><td>&nbsp</td>";
+                                // <td>res[0][0] , res[1][0], res[2][0];
+                                for(var j =0; j<res.length; j++) {
+                                   tmp += "<td>"+(res[j].frameView[i] != -1? res[j].frameView[i] : "–")+"</td>";
+                                }
+                                tmp+= "</tr>";
+                                $("#target > table > tbody").append(tmp);
+                           }
+                           // PRINT PAGE REPLACED
+                           tmp = "<tr class='warning'><td class='label-table'>Page Replaced</td>";
+                           for(var i=0; i<res.length; i++) {
+                                tmp += "<td>"+(res[i].pageReplaced > -2 ? res[i].pageReplaced : "&nbsp")+"</td>";
+                           }
+                           tmp+= "</tr><tr class='danger'><td class='label-table'>Page Fault</td>";
+                           for(var i=0; i<res.length; i++) {
+                                tmp += "<td>"+(res[i].pageReplaced != -3 ? "<i class='fa fa-check' aria-hidden='true'></i>" : "&nbsp") + "</td>";    
+                           }
+                           tmp+= "</tr><tr class='success'><td class='label-table' colspan='"+(data.frameSize + 1)+"'><strong>Total No. of Page Faults:</strong><span class='no-of-page-faults'>"+data.pageFaults+"</span></tr>";
 
-                       for(var i=0; i<data.frameSize; i++) {
-                            tmp = "<tr><td>&nbsp</td>";
-                            // <td>res[0][0] , res[1][0], res[2][0];
-                            for(var j =0; j<res.length; j++) {
-                               tmp += "<td>"+(res[j].frameView[i] != -1? res[j].frameView[i] : "–")+"</td>";
-                            }
-                            tmp+= "</tr>";
-                            $("#target > table > tbody").append(tmp);
-                       }
-                       // PRINT PAGE REPLACED
-                       tmp = "<tr class='warning'><td class='label-table'>Page Replaced</td>";
-                       for(var i=0; i<res.length; i++) {
-                            tmp += "<td>"+(res[i].pageReplaced > -2 ? res[i].pageReplaced : "&nbsp")+"</td>";
-                       }
-                       tmp+= "</tr><tr class='danger'><td class='label-table'>Page Fault</td>";
-                       for(var i=0; i<res.length; i++) {
-                            tmp += "<td>"+(res[i].pageReplaced != -3 ? "<i class='fa fa-check' aria-hidden='true'></i>" : "&nbsp") + "</td>";    
-                       }
-                       tmp+= "</tr><tr class='success'><td class='label-table' colspan='"+(data.frameSize + 1)+"'><strong>Total No. of Page Faults:</strong><span class='no-of-page-faults'>"+data.pageFaults+"</span></tr>";
+                           $("#target > table > tbody").append(tmp);
 
-                       $("#target > table > tbody").append(tmp);
-                       
-                       setTimeout(function(){
-                           $('.preloader').fadeOut(function(){
-                               $('#target').fadeIn();
-                           });
-                       }, 500);
+                           setTimeout(function(){
+                               $('.preloader').fadeOut(function(){
+                                   $('#target').fadeIn();
+                                   isRequesting = false;
+                               });
+                           }, 500);
 
-                    },
-                    error: function(request, status, error) {
-                        console.log(error);
-                        $("#target").html("<div class='alert alert-warning'>" +
-                                          "<strong>Warning! </strong>" + error.toUpperCase() +
-                                        "</div>");
-                        setTimeout(function(){
-                            $('.preloader').fadeOut(function(){ $('#target').fadeIn() });
-                            isRequesting = false;
-                        }, 500);
-                    }
+                        },
+                        error: function(request, status, error) {
+                            console.log(error);
+                            $("#target").html("<div class='alert alert-warning'>" +
+                                              "<strong>Warning! </strong>" + error.toUpperCase() +
+                                            "</div>");
+                            setTimeout(function(){
+                                $('.preloader').fadeOut(function(){ $('#target').fadeIn() });
+                                isRequesting = false;
+                            }, 500);
+                        }
+                    });
                 });
             });
-        });
+        }
     });
 </script>

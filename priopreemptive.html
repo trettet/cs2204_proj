@@ -91,10 +91,12 @@
                     </div>
                     
                     <div class="col-xs-3">
-                        <div class="input-group">
-                            <input type="text" class="form-control line-box" id="cust-add-no" maxlength="1">
-                            <div class="input-group-btn">
-                                <button class="btn btn-outlined btn-warning" id="btn-add-cust"><i class="fa fa-plus" aria-hidden="true"></i> Add Multiple Process</button>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control line-box" id="cust-add-no" maxlength="1">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-outlined btn-warning" id="btn-add-cust"><i class="fa fa-plus" aria-hidden="true"></i> Add Multiple Process</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -155,162 +157,163 @@
     </div>
 </div>
 <script>
-var rows = 0;
-$("#tableProc tbody").on("click", "tr > .proc-col > .controls > a.btn-remove", function(){
-    var par = $(this).parent().parent().parent();
-    $(par).addClass("fadeOutRight").css("animation-duration", "0.6s").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-        $(this).remove();
+    var rows = 0;
+    $("#tableProc tbody").on("click", "tr > .proc-col > .controls > a.btn-remove", function(){
+        var par = $(this).parent().parent().parent();
+        $(par).addClass("fadeOutRight").css("animation-duration", "0.6s").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+            $(this).remove();
+        });
     });
-});
-    
-$("#tableProc tbody").on("click", "tr > .proc-col > .controls > a.btn-edit", function(e){
-    e.preventDefault();
-    var par = $(this).parent().parent();
-    $(par).children().hide();
-    $(par).append("<div class='input-group'><input type='text' class='form-control new-name' maxlength='15' value='"+$(par).children(".proc-name").text() +
-                            "'> <span class='input-group-btn'><button class='btn btn-primary btn-save'>Save</button></span></div>");
+
+    $("#tableProc tbody").on("click", "tr > .proc-col > .controls > a.btn-edit", function(e){
+        e.preventDefault();
+        var par = $(this).parent().parent();
+        $(par).children().hide();
+        $(par).append("<div class='input-group'><input type='text' class='form-control new-name' maxlength='15' value='"+$(par).children(".proc-name").text() +
+                                "'> <span class='input-group-btn'><button class='btn btn-primary btn-save'>Save</button></span></div>");
 
 
-});
-    
-$("#tableProc tbody").on("click","tr > .proc-col > .input-group > .input-group-btn button.btn-save", function(e) {
-    e.preventDefault();
-    var proc_col = $(this).parent().parent().parent();
-    $(proc_col).children(".proc-name").text($(this).parent().siblings(".new-name").val());
-    $(this).parent().parent().remove();
-    $(proc_col).children().show();
-});
+    });
 
-$("#btn-add").on("click", function() {
-    var elem = $("<tr class='animated fadeInLeft' style='animation-duration: 0.8s'><td class='proc-col'><h4 class='proc-name'>P" + ++rows +
-                    "</h4><span class='controls'><a href='javascript:;' class='btn-edit'><i class='fa fa-pencil-square' aria-hidden='true'></i> </a>"+
-                    "<a href='javascript:;' class='btn-remove'><i class='fa fa-trash' aria-hidden='true'></i></a></span></td>" +
-                    "<td><input type='text' class='form-control line-box arrival-time' required></td>" +
-                    "<td><input type='text' class='form-control line-box burst-time' required></td>" +
-                    "<td><input type='text' class='form-control line-box priority' required></td>" +
-                    "</tr>");
+    $("#tableProc tbody").on("click","tr > .proc-col > .input-group > .input-group-btn button.btn-save", function(e) {
+        e.preventDefault();
+        var proc_col = $(this).parent().parent().parent();
+        $(proc_col).children(".proc-name").text($(this).parent().siblings(".new-name").val());
+        $(this).parent().parent().remove();
+        $(proc_col).children().show();
+    });
 
-    $("#tableProc tbody").append(elem);
-});
-    
-$("#btn-add-cust").on("click", function() {
-    var str = $("#cust-add-no").val();
-    str = str.replace(/[^\d.-]/g, '');
-    if (str.length != 0) {
-        var toAdd = parseInt(str);
-        for(var i=0; i<toAdd; i++) {
-            $("#btn-add").click();
+    $("#btn-add").on("click", function() {
+        var elem = $("<tr class='animated fadeInLeft' style='animation-duration: 0.8s'><td class='proc-col'><h4 class='proc-name'>P" + ++rows +
+                        "</h4><span class='controls'><a href='javascript:;' class='btn-edit'><i class='fa fa-pencil-square' aria-hidden='true'></i> </a>"+
+                        "<a href='javascript:;' class='btn-remove'><i class='fa fa-trash' aria-hidden='true'></i></a></span></td>" +
+                        "<td><input type='text' class='form-control line-box arrival-time' required></td>" +
+                        "<td><input type='text' class='form-control line-box burst-time' required></td>" +
+                        "<td><input type='text' class='form-control line-box priority' required></td>" +
+                        "</tr>");
+
+        $("#tableProc tbody").append(elem);
+    });
+
+    $("#btn-add-cust").on("click", function() {
+        var str = $("#cust-add-no").val();
+        str = str.replace(/[^\d.-]/g, '');
+        if (str.length != 0) {
+            var toAdd = parseInt(str);
+            for(var i=0; i<toAdd; i++) {
+                $("#btn-add").click();
+            }
+        } else {
+            addErrorBorder($("#cust-add-no"));
         }
-    } else {
-        addErrorBorder($("#cust-add-no"));
-    }
-});
+    });
 
-$("#btn-generate").on("click", function(){
-    if (isRequesting == false) {
-        var emptyTbxes = checkForEmptyTbxes();
-        if (emptyTbxes == 0) {
-            var data = "";
-            var buff = "";
-            isRequesting = true;
-            $(".target").html("");
-            activeTab("gantt-chart");
-            
-            $('.target.gantt-chart').fadeOut(function(){
-                $('#gantt-chart .preloader').fadeIn(function() {
-                    $.ajax({
-                        url: "/ajax/process.java",
-                        data: data,
-                        type: "POST",
-                        success: function(e){
-                            var data = $.parseJSON(e);
-                            $(".target.gantt-chart").html(data.ganttChart);
-                            $(".target.gantt-chart").append(data.extraHTML);
-                            $(".target.ta-table").html(data.taTable);
-                            $(".target.wt-table").html(data.wtTable);
+    $("#btn-generate").on("click", function(){
+        if (isRequesting == false) {
+            var emptyTbxes = checkForEmptyTbxes("#tableProc input.form-control");
+            if (emptyTbxes == 0) {
+                var data = "";
+                var buff = "";
+                isRequesting = true;
+                $(".target").html("");
+                activeTab("gantt-chart");
 
-                            setTimeout(function(){
-                                $('#gantt-chart .preloader').fadeOut(function(){ $('.target.gantt-chart').fadeIn() });
-                                isRequesting = false;
-                            }, 500);
-                        },
-                        error: function(request, status, error) {
-                            console.log(error);
-                            $(".target").html("<div class='alert alert-warning'>" +
-                                              "<strong>Warning! </strong>" + error.toUpperCase() +
-                                            "</div>");
-                            setTimeout(function(){
-                                $('#gantt-chart .preloader').fadeOut(function(){ $('.target.gantt-chart').fadeIn() });
-                                isRequesting = false;
-                            }, 500);
-                        },
-                        timeout: 3000
-                    });
-                }); 
-            });
-            
-            $("#tableProc > tbody > tr").each(function(){
-                var tmp = $(this).children("td");
-                buff += "{";
+                $('.target.gantt-chart').fadeOut(function(){
+                    $('#gantt-chart .preloader').fadeIn(function() {
+                        $.ajax({
+                            url: "/ajax/process.java",
+                            data: data,
+                            type: "POST",
+                            success: function(e){
+                                var data = $.parseJSON(e);
+                                $(".target.gantt-chart").html(data.ganttChart);
+                                $(".target.gantt-chart").append(data.extraHTML);
+                                $(".target.ta-table").html(data.taTable);
+                                $(".target.wt-table").html(data.wtTable);
 
-                buff += $(tmp).children(".proc-name").text() + "|";
-                buff += $(tmp).children(".arrival-time").val() + "|";
-                buff += $(tmp).children(".burst-time").val() + "|";
-                buff += $(tmp).children(".priority").val();
+                                setTimeout(function(){
+                                    $('#gantt-chart .preloader').fadeOut(function(){ $('.target.gantt-chart').fadeIn() });
+                                    isRequesting = false;
+                                }, 500);
+                            },
+                            error: function(request, status, error) {
+                                console.log(error);
+                                $(".target").html("<div class='alert alert-warning'>" +
+                                                  "<strong>Warning! </strong>" + error.toUpperCase() +
+                                                "</div>");
+                                setTimeout(function(){
+                                    $('#gantt-chart .preloader').fadeOut(function(){ $('.target.gantt-chart').fadeIn() });
+                                    isRequesting = false;
+                                }, 500);
+                            },
+                            timeout: 3000
+                        });
+                    }); 
+                });
 
-                buff += "}";
+                $("#tableProc > tbody > tr").each(function(){
+                    var tmp = $(this).children("td");
+                    buff += "{";
 
-                data += buff;
-                buff = "";
-            });
+                    buff += $(tmp).children(".proc-name").text() + "|";
+                    buff += $(tmp).children(".arrival-time").val() + "|";
+                    buff += $(tmp).children(".burst-time").val() + "|";
+                    buff += $(tmp).children(".priority").val();
+
+                    buff += "}";
+
+                    data += buff;
+                    buff = "";
+                });
+            }
+
         }
+    });
 
-    }
-});
-
-function checkForEmptyTbxes()
-{
-    var i = 0;
-    $("#tableProc input.form-control").each(function() {
-        if ($(this).attr("type") == "text") {
-            var str = $(this).val();
-            str = str.replace(/[^\d.-]/g, '');
-            if (str.length == 0) {
-                i++;
-                addErrorBorder($(this));
-            } else {
-                var testMe = parseInt(str);
-                if ($(this).hasClass("burst-time") && testMe <= 0) {
-                    i++;
-                    addErrorBorder($(this));
-                } else if (testMe < 0) {
+    function checkForEmptyTbxes(selector)
+    {
+        var i = 0;
+        $(selector).each(function() {
+            if ($(this).attr("type") == "text") {
+                var str = $(this).val();
+                str = str.replace(/[^\d]/g, '');
+                if (str.length == 0) {
                     i++;
                     addErrorBorder($(this));
                 } else {
-                    $(this).removeClass("error-outline");
+                    var testMe = parseInt(str);
+                    if ($(this).hasClass("burst-time") && testMe <= 0) {
+                        i++;
+                        addErrorBorder($(this));
+                    } else if (testMe < 0) {
+                        i++;
+                        addErrorBorder($(this));
+                    } else {
+                        $(this).val(testMe);
+                        $(this).removeClass("error-outline");
+                    }
                 }
             }
-        }
 
-    });
-    console.log(i);
-    return i;
-}
+        });
+        console.log(i);
+        return i;
+    }
 
-function addErrorBorder(control)
-{
-    $(control).addClass("error-outline");
-    $(control).on("change", function(){
-        var str = $(this).val();
-        str = str.replace(/[^\d.-]/g, '');
-        if (str.length > 0) {
-            $(this).removeClass("error-outline");  
-        }
-    });
-}
-    
-function activeTab(tab){
-    $('.nav-tabs a[href="#' + tab + '"]').tab('show');
-    $('.nav-pills a[href="#' + tab + '"]').tab('show');
-};
+    function addErrorBorder(control)
+    {
+        $(control).addClass("error-outline");
+        $(control).on("change", function(){
+            var str = $(this).val();
+            str = str.replace(/[^\d]/g, '');
+            if (str.length > 0) {
+                $(this).removeClass("error-outline");  
+            }
+        });
+    }
+
+    function activeTab(tab){
+        $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+        $('.nav-pills a[href="#' + tab + '"]').tab('show');
+    };
 </script>
