@@ -206,8 +206,10 @@ function fetchPage(urlString)
 {
     if (isRequesting == false) {
         isRequesting = true;
+        
         $('#loadhere').fadeOut(150, function(){
             $('#preloader_main').fadeIn(150, function() {
+                $('#loadhere').html("");
                 $.ajax({
                     url: urlString,
                     success: function(result) {
@@ -222,6 +224,9 @@ function fetchPage(urlString)
                     },
                     error: function(request, status, error) {
                         console.log(error);
+                        $("#loadhere").html("<div class='alert alert-warning'>" +
+                                              "<strong>Warning! </strong>" + error.toUpperCase() +
+                                            "</div>");
                         setTimeout(function(){
                             $("#preloader_main").fadeOut(function() {
                                 $("#loadhere").fadeIn(function() {

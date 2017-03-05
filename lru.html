@@ -142,6 +142,7 @@
             var url = "lruProcess.php"; // the script where you handle the form input.
             $('#target').fadeOut(function(){
                 $('.preloader').fadeIn(function(){
+                    $('#target').html("");
                     $.ajax({
                        type: "POST",
                        url: url,
