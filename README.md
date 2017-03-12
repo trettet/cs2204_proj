@@ -2,7 +2,9 @@
 
 ### Apache instructions:
 
-1. Add the line
+1. Copy the folder to /htdocs on xampp
+
+2. Add the line
 
 > ProxyPass /ajax http://localhost:81/
 
@@ -12,17 +14,17 @@ before the line where you find
 
 on httpd.conf file
 
-2. Uncomment the line
+3. Uncomment the line
 
 > LoadModule proxy_http_module modules/mod_proxy_http.so 
 
 on the same file to enable the proxy module in apache.
 
-3. Restart Apache
+4. Restart Apache
 
 ### To run the Backend Java program:
 
-1. Navigate to your jar file
+1. Navigate to the jar file located on ("\priopreemptive\CS2204_Final_Proj_Backend\out\artifacts\CS2204_Final_Proj_Backend_jar") using the Command Prompt
 2. Run in the CLI the following commands
 
 > java -jar \<jar-file.jar\>
